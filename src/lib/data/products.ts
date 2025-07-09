@@ -16,6 +16,7 @@ export const getProductsById = async function ({
       query: {
         id: ids,
         region_id: regionId,
+        // Medusa v2: Use fields, not expand. See https://docs.medusajs.com/api/store#products_getstoreproducts
         fields: "*variants.calculated_price,+variants.inventory_quantity",
       },
       next: { tags: ["products"] },
@@ -33,6 +34,7 @@ export const getProductByHandle = async function (
       query: {
         handle,
         region_id: regionId,
+        // Medusa v2: Use fields, not expand. See https://docs.medusajs.com/api/store#products_getstoreproducts
         fields: "*variants.calculated_price,+variants.inventory_quantity",
       },
       next: { tags: ["products"] },
@@ -102,7 +104,8 @@ export const getProductsList = async function ({
           limit,
           offset,
           region_id: region.id,
-          fields: "*variants.calculated_price",
+          // Medusa v2: Use fields, not expand. See https://docs.medusajs.com/api/store#products_getstoreproducts
+          fields: "*variants.calculated_price,+variants.inventory_quantity",
           ...queryParams,
         },
         next: { tags: ["products"] },

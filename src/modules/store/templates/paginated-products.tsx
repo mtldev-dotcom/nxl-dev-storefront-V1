@@ -111,14 +111,15 @@ function PaginatedProducts({
       {/* Products Grid with Enhanced Layout */}
       {allProducts.length > 0 && (!productsIds || productsIds.length > 0) ? (
         <>
-          {/* Enhanced responsive grid with better spacing and hover effects */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12">
+          {/* Enhanced responsive grid with better spacing, equal card heights, and hover effects */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12 items-stretch">
             {allProducts.map((product: StoreProduct) => {
               return (
                 <div
                   key={product.id}
-                  className="group transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="group transition-all duration-300 hover:scale-105 hover:shadow-lg h-full flex flex-col"
                 >
+                  {/* Ensure ProductPreview fills the card height */}
                   <ProductPreview product={product} />
                 </div>
               )
