@@ -29,7 +29,6 @@ const nextConfig = {
   },
   images: {
     domains: [
-      "medusa-public-images.s3.eu-west-1.amazonaws.com",
       "bucket-production-364e.up.railway.app",
       // Add other domains as needed
     ],
@@ -40,11 +39,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "fashion-starter-demo.s3.eu-central-1.amazonaws.com",
-      },
-      {
-        protocol: "https",
-        hostname: "pub-adb42a8f4cada5f8c2c67f6a9eb2ddb6.r2.dev",
+        hostname: "bucket-production-364e.up.railway.ap",
       },
     ],
   },

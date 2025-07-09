@@ -9,6 +9,18 @@ import {
 } from "@lib/data/products"
 import ProductTemplate from "@modules/products/templates"
 
+// Inline type for materials prop, matching ProductTemplate
+type ProductMaterial = {
+  id: string
+  name: string
+  colors: {
+    id: string
+    name: string
+    hex_code: string
+  }[]
+}
+type ProductTemplateMaterials = ProductMaterial[]
+
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
 }
@@ -45,28 +57,25 @@ export async function generateStaticParams() {
     return staticParams
   } catch (error) {
     console.error(
-      `Failed to generate static paths for product pages: ${
-        error instanceof Error ? error.message : "Unknown error"
+      `Failed to generate static paths for product pages: ${error instanceof Error ? error.message : "Unknown error"
       }.`
     )
     return []
   }
 }
 
+// Helper to fetch product and region once
+async function fetchProductAndRegion(handle: string, countryCode: string) {
+  const region = await getRegion(countryCode)
+  if (!region) return { product: null, region: null }
+  const product = await getProductByHandle(handle, region.id)
+  return { product, region }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle, countryCode } = await params
-  const region = await getRegion(countryCode)
-
-  if (!region) {
-    notFound()
-  }
-
-  const product = await getProductByHandle(handle, region.id)
-
-  if (!product) {
-    notFound()
-  }
-
+  const { product } = await fetchProductAndRegion(handle, countryCode)
+  if (!product) notFound()
   return {
     title: `${product.title} | Medusa Store`,
     description: `${product.title}`,
@@ -79,26 +88,43 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
+  // Debug: log the full params object
+  console.log('ProductPage Debug: Params', params)
+
   const { handle, countryCode } = await params
-  const region = await getRegion(countryCode)
+  // Debug: log the extracted handle and countryCode
+  console.log('ProductPage Debug: Extracted', { handle, countryCode })
+
+  const { product: pricedProduct, region } = await fetchProductAndRegion(handle, countryCode)
+  // Debug: log the region lookup result
+  console.log('ProductPage Debug: Region lookup', { countryCode, region })
 
   if (!region) {
+    console.log('ProductPage Debug: Region not found', { countryCode, handle })
     notFound()
   }
 
-  const [pricedProduct, fashionData] = await Promise.all([
-    getProductByHandle(handle, region.id),
-    getProductFashionDataByHandle(handle),
-  ])
+  // Debug: log the API call params and result
+  console.log('ProductPage Debug: API call', { handle, regionId: region.id, pricedProduct })
 
   if (!pricedProduct) {
+    console.log('ProductPage Debug: Product not found', { handle, regionId: region.id })
     notFound()
+  }
+
+  // Fetch fashion data separately (can fail without breaking the page)
+  let materials: ProductTemplateMaterials = []
+  try {
+    const result = await getProductFashionDataByHandle(handle)
+    materials = result.materials
+  } catch (e) {
+    console.warn('ProductPage Debug: Fashion data fetch failed', e)
   }
 
   return (
     <ProductTemplate
       product={pricedProduct}
-      materials={fashionData.materials}
+      materials={materials}
       region={region}
       countryCode={countryCode}
     />

@@ -28,16 +28,28 @@ export const getProductByHandle = async function (
   handle: string,
   regionId: string
 ) {
-  return sdk.client
-    .fetch<{ products: HttpTypes.StoreProduct[] }>(`/store/products`, {
+  try {
+    const response = await sdk.client.fetch<{ products: any[] }>(`/store/products`, {
       query: {
         handle,
         region_id: regionId,
         fields: "*variants.calculated_price,+variants.inventory_quantity",
       },
       next: { tags: ["products"] },
-    })
-    .then(({ products }) => products[0])
+    });
+    // Log the full response for debugging
+    console.log('getProductByHandle: API response', response);
+    return response.products[0];
+  } catch (error: any) {
+    // Log the full error object for debugging
+    console.error('getProductByHandle: API error', {
+      message: error.message,
+      status: error.status,
+      response: error.response,
+      error,
+    });
+    throw error; // rethrow so the page can handle it as before
+  }
 }
 
 export const getProductFashionDataByHandle = async function (handle: string) {
