@@ -1,0 +1,392 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Cinzel:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-nxl-gold: #D4AF37;
+  }
+
+  html {
+    @apply text-black font-normal;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Cinzel', serif;
+    font-weight: 400;
+  }
+}
+
+@layer utilities {
+
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  /* Text Shadow Utilities for Hero Section */
+  .text-shadow {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-xl {
+    text-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Next X Level Gold Color */
+  .text-nxl-gold {
+    color: var(--color-nxl-gold);
+  }
+
+  .bg-nxl-gold {
+    background-color: var(--color-nxl-gold);
+  }
+
+  .border-nxl-gold {
+    border-color: var(--color-nxl-gold);
+  }
+}
+
+@layer components {
+  .content-container {
+    @apply max-w-[1440px] w-full mx-auto px-6;
+  }
+
+  .contrast-btn {
+    @apply px-4 py-2 border border-black rounded-full hover:bg-black hover:text-white transition-colors duration-200 ease-in;
+  }
+
+  .text-xsmall-regular {
+    @apply text-[10px] leading-4 font-normal;
+  }
+
+  .text-small-regular {
+    @apply text-xs leading-5 font-normal;
+  }
+
+  .text-small-semi {
+    @apply text-xs leading-5 font-semibold;
+  }
+
+  .text-base-regular {
+    @apply text-sm leading-6 font-normal;
+  }
+
+  .text-base-semi {
+    @apply text-sm leading-6 font-semibold;
+  }
+
+  .text-large-regular {
+    @apply text-base leading-6 font-normal;
+  }
+
+  .text-large-semi {
+    @apply text-base leading-6 font-semibold;
+  }
+
+  .text-xl-regular {
+    @apply text-2xl leading-[36px] font-normal;
+  }
+
+  .text-xl-semi {
+    @apply text-2xl leading-[36px] font-semibold;
+  }
+
+  .text-2xl-regular {
+    @apply text-[30px] leading-[48px] font-normal;
+  }
+
+  .text-2xl-semi {
+    @apply text-[30px] leading-[48px] font-semibold;
+  }
+
+  .text-3xl-regular {
+    @apply text-[32px] leading-[44px] font-normal;
+  }
+
+  .text-3xl-semi {
+    @apply text-[32px] leading-[44px] font-semibold;
+  }
+
+  .article {
+    h1 {
+      @apply text-2xl;
+    }
+
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply text-md mt-16 mb-8;
+    }
+
+    p,
+    ul {
+      @apply mb-4;
+    }
+
+    ul,
+    ol {
+      @apply pl-5;
+    }
+
+    ul {
+      @apply list-disc;
+    }
+
+    ol {
+      @apply list-decimal;
+
+      ul {
+        @apply mt-4 pl-0;
+      }
+
+      >li {
+        @apply pl-1;
+      }
+
+      >li+li {
+        @apply mt-5;
+      }
+    }
+  }
+
+  .txt-medium {
+    @apply text-[1.875rem] leading-[1.3125rem] font-normal font-inter;
+  }
+
+  .txt-xlarge-plus {
+    @apply text-[1.125rem] leading-[1.6875rem] font-medium font-inter;
+  }
+
+  /* Gold Lines Animation */
+  .gold-line-1,
+  .gold-line-2,
+  .gold-line-3,
+  .gold-line-4,
+  .gold-line-5 {
+    position: absolute;
+    width: 200%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+    transform-origin: left center;
+  }
+
+  .gold-line-1 {
+    top: 20%;
+    left: -100%;
+    transform: rotate(15deg);
+    animation: moveGoldLine 8s linear infinite;
+  }
+
+  .gold-line-2 {
+    top: 40%;
+    left: -100%;
+    transform: rotate(-10deg);
+    animation: moveGoldLine 12s linear infinite 2s;
+  }
+
+  .gold-line-3 {
+    top: 60%;
+    left: -100%;
+    transform: rotate(20deg);
+    animation: moveGoldLine 10s linear infinite 4s;
+  }
+
+  .gold-line-4 {
+    top: 80%;
+    left: -100%;
+    transform: rotate(-15deg);
+    animation: moveGoldLine 14s linear infinite 6s;
+  }
+
+  .gold-line-5 {
+    top: 30%;
+    left: -100%;
+    transform: rotate(5deg);
+    animation: moveGoldLine 16s linear infinite 1s;
+  }
+
+  @keyframes moveGoldLine {
+    0% {
+      left: -100%;
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 1;
+    }
+
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+
+  /* Text Animations */
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      text-shadow: 0 0 5px #D4AF37, 0 0 10px #D4AF37, 0 0 15px #D4AF37;
+    }
+
+    50% {
+      text-shadow: 0 0 10px #D4AF37, 0 0 20px #D4AF37, 0 0 30px #D4AF37;
+    }
+  }
+
+  @keyframes pulseSlow {
+
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Animation Classes */
+  .animate-slide-in-delay-1 {
+    animation: slideInUp 0.8s ease-out 0.5s forwards;
+  }
+
+  .animate-slide-in-delay-2 {
+    animation: slideInUp 0.8s ease-out 0.8s forwards;
+  }
+
+  .animate-slide-in-delay-3 {
+    animation: slideInUp 0.8s ease-out 1.1s forwards;
+  }
+
+  .animate-slide-in-delay-4 {
+    animation: slideInUp 0.8s ease-out 1.4s forwards;
+  }
+
+  .animate-slide-in-delay-5 {
+    animation: slideInUp 0.8s ease-out 1.7s forwards;
+  }
+
+  .animate-fade-in-delay-6 {
+    animation: fadeIn 1s ease-out 2s forwards;
+  }
+
+  .animate-fade-in-delay-7 {
+    animation: fadeIn 1s ease-out 2.3s forwards;
+  }
+
+  .animate-fade-in-delay-8 {
+    animation: fadeIn 1s ease-out 2.6s forwards;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulseSlow 3s ease-in-out infinite;
+  }
+
+  .hero-text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Additional enhanced effects */
+  .animate-fade-in-up {
+    animation: slideInUp 1s ease-out forwards;
+  }
+
+  /* Gradient text effect */
+  .gradient-text-gold {
+    background: linear-gradient(45deg, #D4AF37, #FFD700, #D4AF37);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+  }
+
+  @keyframes gradientShift {
+
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Enhanced button effects */
+  .btn-enhanced {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .btn-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-enhanced:hover::before {
+    left: 100%;
+  }
+}
