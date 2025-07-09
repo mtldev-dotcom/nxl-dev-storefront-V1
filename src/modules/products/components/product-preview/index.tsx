@@ -90,7 +90,7 @@ export default function ProductPreview({
         href={`/products/${product.handle}`}
         className="block flex-1 focus:outline-none focus:ring-2 focus:ring-nxl-gold/60 focus:ring-offset-2 rounded-xl"
         tabIndex={0}
-        aria-label={`View ${product.title} details`}
+        aria-label={t('viewDetails', { title: product.title })}
       >
         {/* Product Image Container */}
         <div className="relative aspect-square w-full bg-grayscale-50 overflow-hidden">
@@ -106,7 +106,7 @@ export default function ProductPreview({
             {/*  View Details Button - Appears on Hover */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0">
               <div className="bg-white text-black px-4 py-2 rounded-full font-medium text-sm shadow-lg border border-nxl-gold/20 hover:bg-nxl-gold hover:text-white transition-colors duration-200">
-                View Details
+                {t('viewDetails')}
               </div>
             </div>
           </div>
@@ -116,14 +116,14 @@ export default function ProductPreview({
             {/* New Badge */}
             {isNew && !isSoldOut && (
               <span className="bg-green-500 text-white text-xs px-2 py-1 rounded uppercase tracking-widest font-bold shadow-md">
-                New
+                {t('newBadge')}
               </span>
             )}
 
             {/* Sale Badge with Discount Percentage */}
             {hasReducedPrice && !isSoldOut && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded uppercase tracking-widest font-bold shadow-md">
-                {discountPercentage > 0 ? `-${discountPercentage}%` : 'Sale'}
+                {discountPercentage > 0 ? `-${discountPercentage}%` : t('saleBadge')}
               </span>
             )}
           </div>
@@ -132,7 +132,7 @@ export default function ProductPreview({
           {isSoldOut && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
               <span className="bg-grayscale-900 text-white text-sm px-4 py-2 rounded uppercase tracking-widest font-bold shadow-lg">
-                Sold Out
+                {t('soldOut')}
               </span>
             </div>
           )}
@@ -182,12 +182,12 @@ export default function ProductPreview({
                 <div className="flex items-center gap-1">
                   {isSoldOut && (
                     <span className="bg-grayscale-900 text-white text-[10px] px-2 py-0.5 rounded uppercase tracking-widest font-bold shadow-lg">
-                      Sold Out
+                      {t('soldOut')}
                     </span>
                   )}
                   {!isSoldOut && (
                     <span className="bg-green-600 text-white text-[10px] px-2 py-0.5 rounded font-semibold">
-                      In Stock
+                      {t('inStock')}
                     </span>
                   )}
                 </div>
@@ -211,7 +211,7 @@ export default function ProductPreview({
               </div>
             ) : (
               <span className="text-grayscale-500 font-medium text-xs text-right block w-full">
-                Price on Request
+                {t('priceOnRequest')}
               </span>
             )}
           </div>
@@ -224,7 +224,7 @@ export default function ProductPreview({
             ))}
             <span className="text-[10px] text-grayscale-500 ml-1">
               {/* Future: Display actual ratings */}
-              No reviews yet
+              {t('noReviewsYet')}
             </span>
           </div>
         </div>
@@ -246,11 +246,11 @@ export default function ProductPreview({
               console.log('Add to cart:', product.id)
             }
           }}
-          aria-label={`Add ${product.title} to cart`}
+          aria-label={t('addToCart', { title: product.title })}
         >
           {isSoldOut
-            ? 'Sold Out'
-            : 'Add to Cart'
+            ? t('soldOut')
+            : t('addToCart')
           }
         </button>
       </div>

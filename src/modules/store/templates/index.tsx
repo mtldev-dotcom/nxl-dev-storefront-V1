@@ -119,24 +119,6 @@ const StoreTemplate = async ({
                   </span>
                 </h1>
 
-                {/* Store Hero Subtitle */}
-                <p className="text-white text-base md:text-lg lg:text-xl mb-8 md:mb-12 max-w-md md:max-w-lg lg:max-w-xl leading-relaxed hero-text-shadow opacity-0 animate-slide-in-delay-4">
-                  Discover our curated collection of premium furniture and home decor.
-                </p>
-
-                {/* Store CTA Button */}
-                <div className="opacity-0 animate-slide-in-delay-5">
-                  <LocalizedLink
-                    href="#products"
-                    className="group relative inline-block bg-white text-black font-semibold text-sm md:text-base lg:text-lg px-8 md:px-12 lg:px-16 py-3 md:py-4 lg:py-5 transition-all duration-500 tracking-widest uppercase border-2 border-white hover:border-nxl-gold overflow-hidden btn-enhanced"
-                  >
-                    <span className="relative z-10 transition-colors duration-300 group-hover:text-white">
-                      Shop Now
-                    </span>
-                    <div className="absolute inset-0 bg-nxl-gold transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                  </LocalizedLink>
-                </div>
-
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -left-4 w-24 h-24 border border-nxl-gold/30 animate-pulse-slow opacity-0 animate-fade-in-delay-6"></div>
                 <div className="absolute -bottom-8 -right-8 w-32 h-32 border border-white/20 animate-pulse-slow opacity-0 animate-fade-in-delay-7"></div>
@@ -163,10 +145,10 @@ const StoreTemplate = async ({
           <LayoutColumn>
             <div className="text-center mb-8 md:mb-12">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-cinzel font-normal mb-4 text-grayscale-900 leading-tight">
-                Our Collection
+                {t('ourCollection')}
               </h1>
               <p className="text-base md:text-lg text-grayscale-600 max-w-2xl mx-auto leading-relaxed">
-                Discover handpicked furniture and decor pieces that transform your space into a reflection of your unique style.
+                {t('collectionDescription')}
               </p>
             </div>
           </LayoutColumn>
@@ -185,7 +167,7 @@ const StoreTemplate = async ({
             category={category}
             // types={Object.keys(productTypes).length > 0 ? productTypes : undefined} // removed
             // type={type} // removed
-            title="Shop"
+            title={t('shopTitle')}
           />
         </div>
 
@@ -220,7 +202,7 @@ const StoreTemplate = async ({
           <LayoutColumn>
             <div className="text-center">
               <h2 className="text-xl md:text-2xl lg:text-3xl font-cinzel font-normal mb-6 text-grayscale-900">
-                Why Choose Next X Level
+                {t('whyChooseTitle')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mt-12">
                 {/* Feature 1: Quality */}
@@ -229,10 +211,10 @@ const StoreTemplate = async ({
                     <div className="w-8 h-8 bg-nxl-gold rounded-sm"></div>
                   </div>
                   <h3 className="text-lg font-semibold mb-2 text-grayscale-900">
-                    Premium Quality
+                    {t('whyChooseQualityTitle')}
                   </h3>
                   <p className="text-grayscale-600 leading-relaxed">
-                    Handcrafted pieces made with the finest materials and attention to detail.
+                    {t('whyChooseQualityDesc')}
                   </p>
                 </div>
 
@@ -242,10 +224,10 @@ const StoreTemplate = async ({
                     <div className="w-8 h-8 bg-nxl-gold rounded-full"></div>
                   </div>
                   <h3 className="text-lg font-semibold mb-2 text-grayscale-900">
-                    Timeless Design
+                    {t('whyChooseDesignTitle')}
                   </h3>
                   <p className="text-grayscale-600 leading-relaxed">
-                    Contemporary designs that stand the test of time and elevate any space.
+                    {t('whyChooseDesignDesc')}
                   </p>
                 </div>
 
@@ -255,10 +237,10 @@ const StoreTemplate = async ({
                     <div className="w-8 h-8 bg-nxl-gold rounded-lg"></div>
                   </div>
                   <h3 className="text-lg font-semibold mb-2 text-grayscale-900">
-                    Expert Service
+                    {t('whyChooseServiceTitle')}
                   </h3>
                   <p className="text-grayscale-600 leading-relaxed">
-                    Professional consultation and seamless delivery to your doorstep.
+                    {t('whyChooseServiceDesc')}
                   </p>
                 </div>
               </div>

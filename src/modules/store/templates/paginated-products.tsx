@@ -8,6 +8,7 @@ import { withReactQueryProvider } from "@lib/util/react-query"
 import * as React from "react"
 import { useStoreProducts } from "hooks/store"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
+import { useTranslations } from 'next-intl'
 
 const PRODUCT_LIMIT = 12
 
@@ -28,6 +29,9 @@ function PaginatedProducts({
   productsIds?: string[]
   countryCode: string
 }) {
+  // Always call hooks at the top level, never conditionally (React Rules of Hooks)
+  const t = useTranslations('Store')
+
   // Build query parameters with enhanced filtering support
   const queryParams: HttpTypes.StoreProductListParams = {
     limit: PRODUCT_LIMIT,
@@ -142,7 +146,7 @@ function PaginatedProducts({
 
           {/* Products count indicator */}
           <div className="text-center text-sm text-grayscale-500 mt-8">
-            Showing {allProducts.length} products
+            {t('showingProducts', { count: allProducts.length })}
             {productsQuery.hasNextPage && " • Scroll to load more"}
           </div>
         </>
