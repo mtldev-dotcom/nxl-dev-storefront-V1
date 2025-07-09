@@ -48,31 +48,26 @@ export const Header: React.FC<{
         <Layout>
           <LayoutColumn>
             <div className="flex justify-between items-center h-18 md:h-21">
-              <h1 className="font-cinzel font-normal text-md md:text-white group-data-[sticky=true]:md:text-black transition-colors">
+              {/* Logo: always black on product page */}
+              <h1 className="font-cinzel font-normal text-md md:text-white group-data-[sticky=true]:md:text-black product-header:text-black transition-colors">
                 <LocalizedLink href="/">Next <span className="text-nxl-gold">X</span> LEVEL</LocalizedLink>
               </h1>
-              <div className="flex items-center gap-8 max-md:hidden md:text-white group-data-[sticky=true]:md:text-black transition-colors">
-                <NavigationLink href="/" className="md:text-white group-data-[sticky=true]:md:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('home')}</NavigationLink>
-                <NavigationLink href="/about" className="md:text-white group-data-[sticky=true]:md:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('about')}</NavigationLink>
-                <NavigationLink href="/store" className="md:text-white group-data-[sticky=true]:md:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('shop')}</NavigationLink>
-                <NavigationLink href="/contact" className="md:text-white group-data-[sticky=true]:md:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('contact')}</NavigationLink>
+              <div className="flex items-center gap-8 max-md:hidden md:text-white group-data-[sticky=true]:md:text-black product-header:text-black transition-colors">
+                <NavigationLink href="/" className="md:text-white group-data-[sticky=true]:md:text-black product-header:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('home')}</NavigationLink>
+                <NavigationLink href="/about" className="md:text-white group-data-[sticky=true]:md:text-black product-header:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('about')}</NavigationLink>
+                <NavigationLink href="/store" className="md:text-white group-data-[sticky=true]:md:text-black product-header:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('shop')}</NavigationLink>
+                <NavigationLink href="/contact" className="md:text-white group-data-[sticky=true]:md:text-black product-header:text-black [&.text-nxl-gold]:!text-nxl-gold">{t('contact')}</NavigationLink>
               </div>
-              <div className="flex items-center gap-3 lg:gap-6 max-md:hidden">
-                {/* <RegionSwitcher
-                  countryOptions={countryOptions}
-                  className="w-16"
-                  selectButtonClassName="h-auto !gap-0 !p-1 transition-none"
-                  selectIconClassName="text-current"
-                /> */}
+              <div className="flex items-center gap-3 lg:gap-6 max-md:hidden product-header:text-black">
                 <LanguageSwitcher className="ml-2" />
                 <React.Suspense>
                   <SearchField countryOptions={countryOptions} />
                 </React.Suspense>
-                <LoginLink className="p-1 md:text-white group-data-[sticky=true]:md:text-black" />
+                <LoginLink className="p-1 md:text-white group-data-[sticky=true]:md:text-black product-header:text-black" />
                 <CartDrawer />
               </div>
-              <div className="flex items-center gap-4 md:hidden">
-                <LoginLink className="p-1 md:text-white group-data-[sticky=true]:md:text-black" />
+              <div className="flex items-center gap-4 md:hidden product-header:text-black">
+                <LoginLink className="p-1 md:text-white group-data-[sticky=true]:md:text-black product-header:text-black" />
                 <CartDrawer />
                 <React.Suspense>
                   <HeaderDrawer countryOptions={countryOptions} />

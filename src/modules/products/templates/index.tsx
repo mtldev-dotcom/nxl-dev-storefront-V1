@@ -11,6 +11,7 @@ import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import { LocalizedLink } from "@/components/LocalizedLink"
 import { Layout, LayoutColumn } from "@/components/Layout"
+import { useTranslations } from 'next-intl'
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -25,6 +26,7 @@ type ProductTemplateProps = {
   }[]
   region: HttpTypes.StoreRegion
   countryCode: string
+  locale: string // Added for i18n and price formatting
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
@@ -32,15 +34,24 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   materials,
   region,
   countryCode,
+  locale,
 }) => {
   if (!product || !product.id) {
     return notFound()
   }
 
+  // Breadcrumbs for navigation
+  // Use translation keys for Home, Store, Collection
+  // Show: Home / Store / [Collection] / [Product Title]
+  // Use LocalizedLink for navigation
+  // Accessible nav with aria-label
+  const t = useTranslations('ProductPage')
+  const collection = product.collection
+
   const images = product.images || []
   const hasImages = Boolean(
     product.images &&
-      product.images.filter((image) => Boolean(image.url)).length > 0
+    product.images.filter((image) => Boolean(image.url)).length > 0
   )
 
   const collectionDetails = collectionMetadataCustomFieldsSchema.safeParse(
@@ -49,9 +60,41 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
   return (
     <div
-      className="pt-18 md:pt-26 lg:pt-37 pb-26 md:pb-36"
+      className="product-page pt-18 md:pt-26 lg:pt-37 pb-26 md:pb-36"
       data-testid="product-container"
     >
+      {/* Breadcrumb navigation */}
+      <nav aria-label="breadcrumb" className="mb-4">
+        <ol className="flex items-center text-xs text-gray-400 space-x-2">
+          <li>
+            <LocalizedLink href="/" className="hover:underline">
+              {t('breadcrumbHome')}
+            </LocalizedLink>
+          </li>
+          <li>/</li>
+          <li>
+            <LocalizedLink href="/store" className="hover:underline">
+              {t('breadcrumbStore')}
+            </LocalizedLink>
+          </li>
+          {collection && (
+            <>
+              <li>/</li>
+              <li>
+                <LocalizedLink href={`/collections/${collection.handle}`} className="hover:underline">
+                  {collection.title}
+                </LocalizedLink>
+              </li>
+            </>
+          )}
+          <li>/</li>
+          <li className="text-black font-semibold" aria-current="page">
+            {product.title}
+          </li>
+        </ol>
+        {/* Subtle divider below breadcrumb */}
+        <div className="border-b border-gray-100 mt-2" />
+      </nav>
       <ImageGallery className="md:hidden" images={images} />
       <Layout>
         <LayoutColumn className="mb-26 md:mb-52">
@@ -61,12 +104,27 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
                 <ImageGallery className="max-md:hidden" images={images} />
               </div>
             )}
-            <div className="sticky flex-1 top-0">
-              <ProductInfo product={product} />
+            {/* Info/Actions Card Panel */}
+            <div className="sticky flex-1 top-0 bg-white/80 rounded-xl shadow-sm border border-gray-100 px-8 py-10 md:py-14 flex flex-col gap-6 min-w-[320px] max-w-xl mx-auto">
+              {/* Title & Price Block */}
+              <div className="mb-2">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold tracking-tight mb-1">{product.title}</h2>
+                <div className="mb-2">
+                  <ProductInfo product={product} />
+                </div>
+                {/* Accent underline */}
+                <div className="h-1 w-12 bg-blue-400 rounded-full mb-2" />
+              </div>
+              {/* Description */}
+              <div className="text-base md:text-lg text-gray-700 mb-4 leading-relaxed">
+                <p>{product.description || t('descriptionFallback')}</p>
+              </div>
+              {/* Product Actions (options, quantity, add to cart) */}
               <ProductActions
                 product={product}
                 materials={materials}
                 region={region}
+                locale={locale} // Pass locale for i18n/price formatting
               />
             </div>
             {!hasImages && <div className="flex-1" />}
@@ -77,7 +135,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         ((typeof collectionDetails.data.product_page_heading === "string" &&
           collectionDetails.data.product_page_heading.length > 0) ||
           typeof collectionDetails.data.product_page_image?.url ===
-            "string") && (
+          "string") && (
           <Layout>
             <LayoutColumn>
               {typeof collectionDetails.data.product_page_heading ===
@@ -89,22 +147,22 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
                 )}
               {typeof collectionDetails.data.product_page_image?.url ===
                 "string" && (
-                <div className="relative mb-8 md:mb-20 aspect-[3/2]">
-                  <Image
-                    src={collectionDetails.data.product_page_image.url}
-                    alt="Collection product page image"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
+                  <div className="relative mb-8 md:mb-20 aspect-[3/2]">
+                    <Image
+                      src={collectionDetails.data.product_page_image.url}
+                      alt="Collection product page image"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
             </LayoutColumn>
           </Layout>
         )}
       {collectionDetails.success &&
         collectionDetails.data.product_page_wide_image &&
         typeof collectionDetails.data.product_page_wide_image.url ===
-          "string" && (
+        "string" && (
           <div className="relative mb-8 md:mb-20 aspect-[3/2] md:aspect-[7/3]">
             <Image
               src={collectionDetails.data.product_page_wide_image.url}
@@ -125,46 +183,46 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           <Layout>
             {typeof collectionDetails.data.product_page_cta_image?.url ===
               "string" && (
-              <LayoutColumn start={1} end={{ base: 10, md: 6 }}>
-                <div className="relative aspect-[3/4]">
-                  <Image
-                    src={collectionDetails.data.product_page_cta_image.url}
-                    fill
-                    alt="Collection product page CTA image"
-                  />
-                </div>
-              </LayoutColumn>
-            )}
+                <LayoutColumn start={1} end={{ base: 10, md: 6 }}>
+                  <div className="relative aspect-[3/4]">
+                    <Image
+                      src={collectionDetails.data.product_page_cta_image.url}
+                      fill
+                      alt="Collection product page CTA image"
+                    />
+                  </div>
+                </LayoutColumn>
+              )}
             {((typeof collectionDetails.data.product_page_cta_heading ===
               "string" &&
               collectionDetails.data.product_page_cta_heading.length > 0) ||
               (typeof collectionDetails.data.product_page_cta_link ===
                 "string" &&
                 collectionDetails.data.product_page_cta_link.length > 0)) && (
-              <LayoutColumn start={{ base: 1, md: 7 }} end={13}>
-                {typeof collectionDetails.data.product_page_cta_heading ===
-                  "string" &&
-                  collectionDetails.data.product_page_cta_heading.length >
+                <LayoutColumn start={{ base: 1, md: 7 }} end={13}>
+                  {typeof collectionDetails.data.product_page_cta_heading ===
+                    "string" &&
+                    collectionDetails.data.product_page_cta_heading.length >
                     0 && (
-                    <h3 className="text-md md:text-2xl my-8 md:mt-20">
-                      {collectionDetails.data.product_page_cta_heading}
-                    </h3>
-                  )}
-                {typeof collectionDetails.data.product_page_cta_link ===
-                  "string" &&
-                  collectionDetails.data.product_page_cta_link.length > 0 &&
-                  typeof product.collection?.handle === "string" && (
-                    <p className="text-base md:text-md">
-                      <LocalizedLink
-                        href={`/collections/${product.collection.handle}`}
-                        variant="underline"
-                      >
-                        {collectionDetails.data.product_page_cta_link}
-                      </LocalizedLink>
-                    </p>
-                  )}
-              </LayoutColumn>
-            )}
+                      <h3 className="text-md md:text-2xl my-8 md:mt-20">
+                        {collectionDetails.data.product_page_cta_heading}
+                      </h3>
+                    )}
+                  {typeof collectionDetails.data.product_page_cta_link ===
+                    "string" &&
+                    collectionDetails.data.product_page_cta_link.length > 0 &&
+                    typeof product.collection?.handle === "string" && (
+                      <p className="text-base md:text-md">
+                        <LocalizedLink
+                          href={`/collections/${product.collection.handle}`}
+                          variant="underline"
+                        >
+                          {collectionDetails.data.product_page_cta_link}
+                        </LocalizedLink>
+                      </p>
+                    )}
+                </LayoutColumn>
+              )}
           </Layout>
         )}
 

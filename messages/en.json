@@ -187,6 +187,24 @@
     "newBadge": "New",
     "saleBadge": "Sale"
   },
+  "ProductPage": {
+    "chooseSize": "Choose size",
+    "chooseMaterial": "Choose material",
+    "chooseColor": "Choose color",
+    "selectVariant": "Select variant",
+    "addToCart": "Add to Cart",
+    "inStock": "In Stock",
+    "soldOut": "Sold Out",
+    "fromPrice": "From {price}",
+    "quantity": "Quantity",
+    "collection": "Collection",
+    "descriptionFallback": "Crafted in Canada from premium materials for all-day comfort and style.",
+    "chooseSizePlaceholder": "Choose size",
+    "breadcrumbHome": "Home",
+    "breadcrumbStore": "Store",
+    "breadcrumbCollection": "Collection",
+    "breadcrumbBack": "Back to {{name}}"
+  },
   "Common": {
     "loading": "Loading...",
     "error": "Error",

@@ -19,6 +19,7 @@ import ProductPrice from "@modules/products/components/product-price"
 import { UiRadioGroup } from "@/components/ui/Radio"
 import { withReactQueryProvider } from "@lib/util/react-query"
 import { useAddLineItem } from "hooks/cart"
+import { useTranslations } from 'next-intl'
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -33,6 +34,7 @@ type ProductActionsProps = {
   }[]
   region: HttpTypes.StoreRegion
   disabled?: boolean
+  locale: string // Added for i18n and price formatting
 }
 
 const optionsAsKeymap = (
@@ -72,7 +74,9 @@ const getInitialOptions = (product: ProductActionsProps["product"]) => {
   return null
 }
 
-function ProductActions({ product, materials, disabled }: ProductActionsProps) {
+function ProductActions({ product, materials, disabled, locale }: ProductActionsProps) {
+  // Always call hooks at the top level
+  const t = useTranslations('ProductPage')
   const [options, setOptions] = useState<Record<string, string | undefined>>(
     getInitialOptions(product) ?? {}
   )
@@ -145,8 +149,8 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
   const otherOptions =
     materialOption && colorOption
       ? productOptions.filter(
-          (o) => o.id !== materialOption.id && o.id !== colorOption.id
-        )
+        (o) => o.id !== materialOption.id && o.id !== colorOption.id
+      )
       : productOptions
 
   const selectedMaterial =
@@ -162,9 +166,9 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
 
   return (
     <>
-      <ProductPrice product={product} variant={selectedVariant} />
+      <ProductPrice product={product} variant={selectedVariant} locale={locale} />
       <div className="max-md:text-xs mb-8 md:mb-16 max-w-120">
-        <p>{product.description}</p>
+        <p>{product.description || t('descriptionFallback')}</p>
       </div>
       {hasMultipleVariants && (
         <div className="flex flex-col gap-8 md:gap-6 mb-4 md:mb-26">
@@ -172,7 +176,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
             <>
               <div>
                 <p className="mb-4">
-                  Materials
+                  {t('chooseMaterial')}
                   {options[materialOption.id] && (
                     <span className="text-grayscale-500 ml-6">
                       {options[materialOption.id]}
@@ -184,10 +188,10 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
                   onSelectionChange={(value) => {
                     setOptions({ [materialOption.id]: `${value}` })
                   }}
-                  placeholder="Choose material"
+                  placeholder={t('chooseMaterial')}
                   className="w-full md:w-60"
                   isDisabled={!!disabled || isPending}
-                  aria-label="Material"
+                  aria-label={t('chooseMaterial')}
                 >
                   <UiSelectButton className="!h-12 px-4 gap-2 max-md:text-base">
                     <UiSelectValue />
@@ -198,7 +202,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
                       {materials.map((material) => (
                         <UiSelectListBoxItem
                           key={material.id}
-                          id={material.name}
+                          textValue={material.name}
                         >
                           {material.name}
                         </UiSelectListBoxItem>
@@ -210,7 +214,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
               {selectedMaterial && (
                 <div className="mb-6">
                   <p className="mb-4">
-                    Colors
+                    {t('chooseColor')}
                     <span className="text-grayscale-500 ml-6">
                       {options[colorOption.id]}
                     </span>
@@ -220,7 +224,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
                     onChange={(value) => {
                       setOptionValue(colorOption.id, value)
                     }}
-                    aria-label="Color"
+                    aria-label={t('chooseColor')}
                     className="flex gap-6"
                     isDisabled={!!disabled || isPending}
                   >
@@ -243,7 +247,7 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
               return (
                 <div key={option.id}>
                   <p className="mb-4">
-                    {option.title}
+                    {t('chooseSize')}
                     {options[option.id] && (
                       <span className="text-grayscale-500 ml-6">
                         {options[option.id]}
@@ -255,7 +259,8 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
                     onSelectionChange={(value) => {
                       setOptionValue(option.id, `${value}`)
                     }}
-                    placeholder={`Choose ${option.title.toLowerCase()}`}
+                    // Use translation key for placeholder to support i18n
+                    placeholder={t('chooseSizePlaceholder')}
                     className="w-full md:w-60"
                     isDisabled={!!disabled || isPending}
                     aria-label={option.title}
@@ -303,10 +308,10 @@ function ProductActions({ product, materials, disabled }: ProductActionsProps) {
           className="sm:flex-1"
         >
           {!selectedVariant
-            ? "Select variant"
+            ? t('selectVariant')
             : !itemsInStock
-              ? "Out of stock"
-              : "Add to cart"}
+              ? t('soldOut')
+              : t('addToCart')}
         </Button>
       </div>
     </>

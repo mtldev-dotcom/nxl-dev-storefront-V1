@@ -469,3 +469,10 @@
     @apply bg-nxl-gold text-white border-nxl-gold;
   }
 }
+
+.product-header,
+.product-header * {
+  color: #000 !important;
+  fill: #000 !important;
+  border-color: #000 !important;
+}

@@ -22,7 +22,7 @@ type ProductMaterial = {
 type ProductTemplateMaterials = ProductMaterial[]
 
 type Props = {
-  params: Promise<{ countryCode: string; handle: string }>
+  params: Promise<{ countryCode: string; locale: string; handle: string }>
 }
 
 export async function generateStaticParams() {
@@ -91,9 +91,9 @@ export default async function ProductPage({ params }: Props) {
   // Debug: log the full params object
   console.log('ProductPage Debug: Params', params)
 
-  const { handle, countryCode } = await params
-  // Debug: log the extracted handle and countryCode
-  console.log('ProductPage Debug: Extracted', { handle, countryCode })
+  const { handle, countryCode, locale } = await params
+  // Debug: log the extracted handle, countryCode, and locale
+  console.log('ProductPage Debug: Extracted', { handle, countryCode, locale })
 
   const { product: pricedProduct, region } = await fetchProductAndRegion(handle, countryCode)
   // Debug: log the region lookup result
@@ -127,6 +127,7 @@ export default async function ProductPage({ params }: Props) {
       materials={materials}
       region={region}
       countryCode={countryCode}
+      locale={locale}
     />
   )
 }

@@ -187,6 +187,24 @@
     "newBadge": "Nouveau",
     "saleBadge": "Réduction"
   },
+  "ProductPage": {
+    "chooseSize": "Choisir la taille",
+    "chooseMaterial": "Choisir le matériau",
+    "chooseColor": "Choisir la couleur",
+    "selectVariant": "Sélectionner une variante",
+    "addToCart": "Ajouter au panier",
+    "inStock": "En stock",
+    "soldOut": "Épuisé",
+    "fromPrice": "À partir de {price}",
+    "quantity": "Quantité",
+    "collection": "Collection",
+    "descriptionFallback": "Confectionné au Canada avec des matériaux haut de gamme pour un confort et un style incomparables.",
+    "chooseSizePlaceholder": "Sélectionner la taille",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbStore": "Boutique",
+    "breadcrumbCollection": "Collection",
+    "breadcrumbBack": "Retour à {{name}}"
+  },
   "Common": {
     "loading": "Chargement...",
     "error": "Erreur",

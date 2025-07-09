@@ -20,6 +20,7 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
     currentPath.startsWith("/collections")
   const isAlwaysSticky =
     currentPath.startsWith("/auth") || currentPath.startsWith("/account")
+  const isProductPage = pathName.includes('/products/')
 
   React.useEffect(() => {
     if (isAlwaysSticky) {
@@ -84,7 +85,13 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
   return (
     <div
       id="site-header"
-      className="top-0 left-0 w-full max-md:bg-grayscale-50 data-[light=true]:md:text-white data-[sticky=true]:md:bg-white data-[sticky=true]:md:text-black transition-colors fixed z-40 group"
+      className={[
+        "top-0 left-0 w-full transition-colors fixed z-40 group",
+        // Enhanced sticky effect: shadow, bg opacity, blur, smooth transition
+        "data-[sticky=true]:shadow-lg data-[sticky=true]:bg-white/95 data-[sticky=true]:backdrop-blur data-[sticky=true]:transition-all data-[sticky=true]:duration-200",
+        "max-md:bg-grayscale-50 data-[light=true]:md:text-white data-[sticky=true]:md:bg-white data-[sticky=true]:md:text-black",
+        isProductPage ? 'bg-white shadow-md product-header' : ''
+      ].join(' ')}
       data-light={isPageWithHeroImage}
       data-sticky={isAlwaysSticky}
     >
