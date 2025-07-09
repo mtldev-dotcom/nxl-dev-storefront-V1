@@ -165,6 +165,10 @@
     "notifyMeButton": "Notify Me When Available",
     "backToHomeButton": "Back to Home"
   },
+  "Product": {
+    "soldOut": "Sold Out",
+    "sale": "Sale"
+  },
   "Common": {
     "loading": "Loading...",
     "error": "Error",

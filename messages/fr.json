@@ -165,6 +165,10 @@
     "notifyMeButton": "M'aviser Quand Disponible",
     "backToHomeButton": "Retour à l'Accueil"
   },
+  "Product": {
+    "soldOut": "Épuisé",
+    "sale": "Réduction"
+  },
   "Common": {
     "loading": "Chargement...",
     "error": "Erreur",
