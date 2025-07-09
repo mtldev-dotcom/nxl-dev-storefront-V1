@@ -16,6 +16,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import { useCustomer } from "hooks/customer"
 import { useSetEmail } from "hooks/cart"
 import { StoreCart } from "@medusajs/types"
+import { useTranslations } from 'next-intl'
 
 export const emailFormSchema = z.object({
   email: z.string().min(3).email("Enter a valid email address."),
@@ -51,6 +52,9 @@ const Email = ({
     )
   }
 
+  // Use translations for all user-facing strings
+  const t = useTranslations('Checkout')
+
   return (
     <>
       <div className="flex justify-between mb-6 md:mb-8">
@@ -58,23 +62,25 @@ const Email = ({
           <div>
             <p
               className={twJoin(
-                "transition-fontWeight duration-75",
-                isOpen && "font-semibold"
+                "transition-fontWeight duration-75 text-lg md:text-xl font-semibold font-serif text-black",
+                isOpen && "font-bold text-nxl-gold"
               )}
             >
-              1. Email
+              {t('stepEmail')}
             </p>
           </div>
           {isOpen && !customer && !customerPending && (
             <div className="text-grayscale-500">
               <p>
-                Already have an account? No worries, just{" "}
+                {t('alreadyHaveAccount')}{" "}
                 <UiDialogTrigger>
-                  <Button variant="link">log in.</Button>
+                  <Button variant="link" className="text-nxl-gold font-semibold underline">
+                    {t('logIn')}
+                  </Button>
                   <UiModalOverlay>
                     <UiModal className="relative max-w-108">
                       <UiDialog>
-                        <p className="text-md mb-10">Log in</p>
+                        <p className="text-md mb-10 font-bold">{t('logInTitle')}</p>
                         <LoginForm
                           redirectUrl={`/${countryCode}/checkout?step=delivery`}
                           handleCheckout={onSubmit}
@@ -96,54 +102,59 @@ const Email = ({
         {!isOpen && (
           <Button
             variant="link"
+            className="text-nxl-gold font-semibold underline"
             onPress={() => {
               router.push(pathname + "?step=email")
             }}
           >
-            Change
+            {t('change')}
           </Button>
         )}
       </div>
-      {isOpen ? (
-        <Form
-          schema={emailFormSchema}
-          onSubmit={onSubmit}
-          formProps={{
-            id: `email`,
-          }}
-          defaultValues={{ email: cart?.email || "" }}
-        >
-          {({ watch }) => {
-            const formValue = watch("email")
-            return (
-              <>
-                <InputField
-                  placeholder="Email"
-                  name="email"
-                  inputProps={{
-                    autoComplete: "email",
-                    title: "Enter a valid email address.",
-                  }}
-                  data-testid="shipping-email-input"
-                />
-                <SubmitButton
-                  className="mt-8"
-                  isLoading={isPending}
-                  isDisabled={!formValue}
-                >
-                  Next
-                </SubmitButton>
-                <ErrorMessage error={data?.error} />
-              </>
-            )
-          }}
-        </Form>
-      ) : cart?.email ? (
-        <ul className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-34">
-          <li className="text-grayscale-500">Email</li>
-          <li className="text-grayscale-600 break-all">{cart.email}</li>
-        </ul>
-      ) : null}
+      {/* Card/panel background for premium look */}
+      <div className="bg-white/90 rounded-xl shadow-sm border border-gray-100 px-6 py-8 md:py-10 max-w-xl mx-auto">
+        {isOpen ? (
+          <Form
+            schema={emailFormSchema}
+            onSubmit={onSubmit}
+            formProps={{
+              id: `email`,
+            }}
+            defaultValues={{ email: cart?.email || "" }}
+          >
+            {({ watch }) => {
+              const formValue = watch("email")
+              return (
+                <>
+                  <InputField
+                    placeholder={t('emailPlaceholder')}
+                    name="email"
+                    inputProps={{
+                      autoComplete: "email",
+                      title: t('emailError'),
+                    }}
+                    data-testid="shipping-email-input"
+                    className="text-lg px-4 py-3 border-2 border-gray-200 rounded-md focus:border-nxl-gold focus:ring-nxl-gold"
+                  />
+                  <SubmitButton
+                    className="mt-8 bg-nxl-gold text-white font-bold py-3 rounded-md hover:bg-nxl-gold/90 transition-colors"
+                    isLoading={isPending}
+                    isDisabled={!formValue}
+                  >
+                    {t('next')}
+                  </SubmitButton>
+                  <ErrorMessage error={data?.error} />
+                </>
+              )
+            }}
+          </Form>
+        ) : cart?.email ? (
+          <ul className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-34">
+            <li className="text-grayscale-500">{t('email')}</li>
+            <li className="text-grayscale-600 break-all">{cart.email}</li>
+          </ul>
+        ) : null}
+      </div>
     </>
   )
 }

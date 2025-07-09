@@ -18,6 +18,8 @@ import {
   UiCheckboxLabel,
 } from "@/components/ui/Checkbox"
 import { useFormContext, useWatch } from "react-hook-form"
+import { CheckoutDeliveryTranslations } from "../../../types/checkout"
+import { useTranslations } from "next-intl"
 
 const isShippingAddressEmpty = (formData: {
   shipping_address?: Pick<
@@ -54,12 +56,46 @@ const ShippingAddress = ({
   cart,
   checked,
   onChange,
+  translations,
+  locale,
 }: {
   customer: HttpTypes.StoreCustomer | null
   cart: HttpTypes.StoreCart | null
   checked: boolean
   onChange: () => void
+  translations?: CheckoutDeliveryTranslations
+  locale?: string
 }) => {
+  // Translation function: use prop if provided, else hook, else locale fallback
+  let t: (key: keyof CheckoutDeliveryTranslations) => string
+  if (translations) {
+    t = (key) => translations[key as string] || (key as string)
+  } else {
+    try {
+      const hookT = useTranslations('Checkout')
+      t = (key) => hookT(key as string)
+    } catch {
+      t = (key) => {
+        // Fallbacks for reliability
+        const fallbacks: Record<string, string> = {
+          stepDelivery: locale === 'fr' ? '2. Détails de livraison' : '2. Delivery details',
+          firstName: locale === 'fr' ? 'Prénom' : 'First name',
+          lastName: locale === 'fr' ? 'Nom' : 'Last name',
+          address: locale === 'fr' ? 'Adresse' : 'Address',
+          company: locale === 'fr' ? 'Entreprise' : 'Company',
+          postalCode: locale === 'fr' ? 'Code postal' : 'Postal code',
+          city: locale === 'fr' ? 'Ville' : 'City',
+          country: locale === 'fr' ? 'Pays' : 'Country',
+          stateProvince: locale === 'fr' ? 'Province / État' : 'State / Province',
+          phone: locale === 'fr' ? 'Téléphone' : 'Phone',
+          billingSameAsShipping: locale === 'fr' ? "L'adresse de facturation est la même que l'adresse de livraison" : 'Billing address same as shipping address',
+          next: locale === 'fr' ? 'Suivant' : 'Next',
+        }
+        return fallbacks[key as string] || (key as string)
+      }
+    }
+  }
+
   const countryCode = useCountryCode()
 
   const { setValue, control } = useFormContext()
@@ -155,8 +191,8 @@ const ShippingAddress = ({
   return (
     <>
       {customer &&
-      (addressesInRegion?.length || 0) > 0 &&
-      !isShippingAddressEmpty(formData) ? (
+        (addressesInRegion?.length || 0) > 0 &&
+        !isShippingAddressEmpty(formData) ? (
         <div className="w-full border border-grayscale-200 rounded-xs p-4 flex flex-wrap gap-8 max-lg:flex-col mb-8">
           <div className="flex flex-1 gap-8">
             <Icon name="user" className="w-6 h-6 mt-2.5" />
@@ -315,37 +351,37 @@ const ShippingAddress = ({
       ) : (
         <div className="grid grid-cols-2 gap-4 mb-8">
           <InputField
-            placeholder="First name"
+            placeholder={t('firstName')}
             name="shipping_address.first_name"
             inputProps={{ autoComplete: "given-name" }}
             data-testid="shipping-first-name-input"
           />
           <InputField
-            placeholder="Last name"
+            placeholder={t('lastName')}
             name="shipping_address.last_name"
             inputProps={{ autoComplete: "family-name" }}
             data-testid="shipping-last-name-input"
           />
           <InputField
-            placeholder="Address"
+            placeholder={t('address')}
             name="shipping_address.address_1"
             inputProps={{ autoComplete: "address-line1" }}
             data-testid="shipping-address-input"
           />
           <InputField
-            placeholder="Company"
+            placeholder={t('company')}
             name="shipping_address.company"
             inputProps={{ autoComplete: "organization" }}
             data-testid="shipping-company-input"
           />
           <InputField
-            placeholder="Postal code"
+            placeholder={t('postalCode')}
             name="shipping_address.postal_code"
             inputProps={{ autoComplete: "postal-code" }}
             data-testid="shipping-postal-code-input"
           />
           <InputField
-            placeholder="City"
+            placeholder={t('city')}
             name="shipping_address.city"
             inputProps={{ autoComplete: "address-level2" }}
             data-testid="shipping-city-input"
@@ -368,13 +404,13 @@ const ShippingAddress = ({
             data-testid="shipping-country-select"
           />
           <InputField
-            placeholder="State / Province"
+            placeholder={t('stateProvince')}
             name="shipping_address.province"
             inputProps={{ autoComplete: "address-level1" }}
             data-testid="shipping-province-input"
           />
           <InputField
-            placeholder="Phone"
+            placeholder={t('phone')}
             name="shipping_address.phone"
             inputProps={{ autoComplete: "tel" }}
             data-testid="shipping-phone-input"
@@ -400,7 +436,7 @@ const ShippingAddress = ({
             <UiCheckboxIcon />
           </UiCheckboxBox>
           <UiCheckboxLabel>
-            Billing address same as shipping address
+            {t('billingSameAsShipping')}
           </UiCheckboxLabel>
         </UiCheckbox>
       </div>

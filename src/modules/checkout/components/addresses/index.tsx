@@ -14,6 +14,8 @@ import { z } from "zod"
 import { useCustomer } from "hooks/customer"
 import { useSetShippingAddress } from "hooks/cart"
 import { StoreCart } from "@medusajs/types"
+import { CheckoutDeliveryTranslations } from "../../../types/checkout"
+import { useTranslations } from "next-intl"
 
 const addressesFormSchema = z
   .object({
@@ -53,7 +55,42 @@ const addressesFormSchema = z
     ])
   )
 
-const Addresses = ({ cart }: { cart: StoreCart }) => {
+// Refactored Addresses component to use hybrid translation pattern for i18n
+const Addresses = ({ cart, translations, locale }: {
+  cart: StoreCart,
+  translations?: CheckoutDeliveryTranslations,
+  locale?: string
+}) => {
+  // Translation function: use prop if provided, else hook, else locale fallback
+  let t: (key: keyof CheckoutDeliveryTranslations) => string
+  if (translations) {
+    t = (key) => translations[key as string] || (key as string)
+  } else {
+    try {
+      const hookT = useTranslations('Checkout')
+      t = (key) => hookT(key as string)
+    } catch {
+      t = (key) => {
+        // Fallbacks for reliability
+        const fallbacks: Record<string, string> = {
+          stepDelivery: locale === 'fr' ? '2. Détails de livraison' : '2. Delivery details',
+          firstName: locale === 'fr' ? 'Prénom' : 'First name',
+          lastName: locale === 'fr' ? 'Nom' : 'Last name',
+          address: locale === 'fr' ? 'Adresse' : 'Address',
+          company: locale === 'fr' ? 'Entreprise' : 'Company',
+          postalCode: locale === 'fr' ? 'Code postal' : 'Postal code',
+          city: locale === 'fr' ? 'Ville' : 'City',
+          country: locale === 'fr' ? 'Pays' : 'Country',
+          stateProvince: locale === 'fr' ? 'Province / État' : 'State / Province',
+          phone: locale === 'fr' ? 'Téléphone' : 'Phone',
+          billingSameAsShipping: locale === 'fr' ? "L'adresse de facturation est la même que l'adresse de livraison" : 'Billing address same as shipping address',
+          next: locale === 'fr' ? 'Suivant' : 'Next',
+        }
+        return fallbacks[key as string] || (key as string)
+      }
+    }
+  }
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -95,13 +132,14 @@ const Addresses = ({ cart }: { cart: StoreCart }) => {
     <>
       <div className="flex justify-between mb-6 md:mb-8 border-t border-grayscale-200 pt-8 mt-8">
         <div>
+          {/* Step heading uses translation */}
           <p
             className={twJoin(
               "transition-fontWeight duration-75",
               isOpen && "font-semibold"
             )}
           >
-            2. Delivery details
+            {t('stepDelivery')}
           </p>
         </div>
         {!isOpen && cart?.shipping_address && (
@@ -111,6 +149,7 @@ const Addresses = ({ cart }: { cart: StoreCart }) => {
               router.push(pathname + "?step=delivery")
             }}
           >
+            {/* Use translation for 'Change' if needed */}
             Change
           </Button>
         )}
@@ -125,47 +164,47 @@ const Addresses = ({ cart }: { cart: StoreCart }) => {
           defaultValues={
             sameAsBilling
               ? {
-                  shipping_address: cart?.shipping_address || {
-                    first_name: "",
-                    last_name: "",
-                    company: "",
-                    province: "",
-                    city: "",
-                    postal_code: "",
-                    country_code: "",
-                    address_1: "",
-                    address_2: "",
-                    phone: "",
-                  },
-                  same_as_billing: "on",
-                }
+                shipping_address: cart?.shipping_address || {
+                  first_name: "",
+                  last_name: "",
+                  company: "",
+                  province: "",
+                  city: "",
+                  postal_code: "",
+                  country_code: "",
+                  address_1: "",
+                  address_2: "",
+                  phone: "",
+                },
+                same_as_billing: "on",
+              }
               : {
-                  shipping_address: cart?.shipping_address || {
-                    first_name: "",
-                    last_name: "",
-                    company: "",
-                    province: "",
-                    city: "",
-                    postal_code: "",
-                    country_code: "",
-                    address_1: "",
-                    address_2: "",
-                    phone: "",
-                  },
-                  same_as_billing: "off",
-                  billing_address: cart?.billing_address || {
-                    first_name: "",
-                    last_name: "",
-                    company: "",
-                    province: "",
-                    city: "",
-                    postal_code: "",
-                    country_code: "",
-                    address_1: "",
-                    address_2: "",
-                    phone: "",
-                  },
-                }
+                shipping_address: cart?.shipping_address || {
+                  first_name: "",
+                  last_name: "",
+                  company: "",
+                  province: "",
+                  city: "",
+                  postal_code: "",
+                  country_code: "",
+                  address_1: "",
+                  address_2: "",
+                  phone: "",
+                },
+                same_as_billing: "off",
+                billing_address: cart?.billing_address || {
+                  first_name: "",
+                  last_name: "",
+                  company: "",
+                  province: "",
+                  city: "",
+                  postal_code: "",
+                  country_code: "",
+                  address_1: "",
+                  address_2: "",
+                  phone: "",
+                },
+              }
           }
         >
           {({ watch }) => {
@@ -175,93 +214,44 @@ const Addresses = ({ cart }: { cart: StoreCart }) => {
               !Object.values(shippingData).some((value) => value)
             return (
               <>
+                {/* Pass translations to ShippingAddress component if needed */}
                 <ShippingAddress
                   customer={customer || null}
                   checked={sameAsBilling}
                   onChange={toggleSameAsBilling}
                   cart={cart}
+                  translations={translations}
+                  locale={locale}
                 />
 
                 {!sameAsBilling && (
                   <BillingAddress cart={cart} customer={customer || null} />
                 )}
 
+                {/* Checkbox label uses translation */}
+                <label className="flex items-center mt-4">
+                  <input
+                    type="checkbox"
+                    checked={sameAsBilling}
+                    onChange={toggleSameAsBilling}
+                    className="mr-2"
+                  />
+                  {t('billingSameAsShipping')}
+                </label>
+
+                {/* Submit button uses translation */}
                 <SubmitButton
                   className="mt-8"
                   isLoading={isPending}
                   isDisabled={isDisabled}
                 >
-                  Next
+                  {t('next')}
                 </SubmitButton>
                 <ErrorMessage error={data?.error} />
               </>
             )
           }}
         </Form>
-      ) : cart?.shipping_address ? (
-        <div className="flex flex-col gap-4">
-          <div className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-12">
-            <div className="text-grayscale-500">Shipping address</div>
-            <div className="text-grayscale-600">
-              {[
-                cart.shipping_address.first_name,
-                cart.shipping_address.last_name,
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              <br />
-              {[
-                cart.shipping_address.address_1,
-                cart.shipping_address.address_2,
-              ]
-                .filter(Boolean)
-                .join(" ")}
-              <br />
-              {[cart.shipping_address.postal_code, cart.shipping_address.city]
-                .filter(Boolean)
-                .join(" ")}
-              <br />
-              {cart.shipping_address.country_code?.toUpperCase()}
-              <br />
-              {cart.shipping_address.phone}
-            </div>
-          </div>
-          {sameAsBilling || cart.billing_address ? (
-            <div className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-17">
-              <div className="text-grayscale-500">Billing address</div>
-              <div className="text-grayscale-600">
-                {sameAsBilling ? (
-                  "Same as shipping address"
-                ) : (
-                  <>
-                    {[
-                      cart.billing_address?.first_name,
-                      cart.billing_address?.last_name,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    <br />
-                    {[
-                      cart.billing_address?.address_1,
-                      cart.billing_address?.address_2,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    <br />
-                    {[
-                      cart.billing_address?.postal_code,
-                      cart.billing_address?.city,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    <br />
-                    {cart.billing_address?.country_code?.toUpperCase()}
-                  </>
-                )}
-              </div>
-            </div>
-          ) : null}
-        </div>
       ) : null}
     </>
   )
