@@ -6,8 +6,33 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/Button"
 import PaymentButton from "@modules/checkout/components/payment-button"
 import { StoreCart } from "@medusajs/types"
+import { ReviewStepTranslations } from '../../../types/checkout-translations'
+import { useTranslations } from 'next-intl'
 
-const Review = ({ cart }: { cart: StoreCart }) => {
+const Review = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: ReviewStepTranslations, locale?: string }) => {
+  // Hybrid translation pattern: use prop, then hook, then fallback
+  let t: (key: keyof ReviewStepTranslations) => string
+  if (propTranslations) {
+    t = (key) => propTranslations[key as string] || (key as string)
+  } else {
+    try {
+      const hookT = useTranslations('ReviewStep')
+      t = (key) => hookT(key as string)
+    } catch {
+      t = (key) => {
+        const fallbacks: Record<string, string> = {
+          heading: locale === 'fr' ? '5. Revue' : '5. Review',
+          placeOrder: locale === 'fr' ? 'Passer la commande' : 'Place Order',
+          back: locale === 'fr' ? 'Retour' : 'Back',
+          confirmText: locale === 'fr'
+            ? "En cliquant sur le bouton Passer la commande, vous confirmez avoir lu, compris et accepté nos Conditions d'utilisation, Conditions de vente et Politique de retour, et reconnaissez avoir lu la Politique de confidentialité de Medusa Store."
+            : "By clicking the Place Order button, you confirm that you have read, understand and accept our Terms of Use, Terms of Sale and Returns Policy and acknowledge that you have read Medusa Store's Privacy Policy."
+        }
+        return fallbacks[key as string] || (key as string)
+      }
+    }
+  }
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -32,7 +57,7 @@ const Review = ({ cart }: { cart: StoreCart }) => {
               isOpen && "font-semibold"
             )}
           >
-            5. Review
+            {t('heading')}
           </p>
         </div>
         {!isOpen &&
@@ -46,6 +71,7 @@ const Review = ({ cart }: { cart: StoreCart }) => {
                 router.push(pathname + "?step=review", { scroll: false })
               }}
             >
+              {/* Use translation for 'View' if needed */}
               View
             </Button>
           )}
@@ -53,16 +79,14 @@ const Review = ({ cart }: { cart: StoreCart }) => {
       {isOpen && previousStepsCompleted && (
         <>
           <p className="mb-8">
-            By clicking the Place Order button, you confirm that you have read,
-            understand and accept our Terms of Use, Terms of Sale and Returns
-            Policy and acknowledge that you have read Medusa Store&apos;s
-            Privacy Policy.
+            {t('confirmText')}
           </p>
           <PaymentButton
             cart={cart}
             selectPaymentMethod={() => {
               router.push(pathname + "?step=payment", { scroll: false })
             }}
+          // You may want to pass translated button text to PaymentButton as well
           />
         </>
       )}

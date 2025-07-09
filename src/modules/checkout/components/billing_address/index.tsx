@@ -13,6 +13,8 @@ import { UpsertAddressForm } from "@modules/account/components/UpsertAddressForm
 import { useCountryCode } from "hooks/country-code"
 import { twMerge } from "tailwind-merge"
 import { useFormContext } from "react-hook-form"
+import { BillingAddressTranslations } from '../../../types/checkout-translations'
+import { useTranslations } from 'next-intl'
 
 const isBillingAddressEmpty = (formData: {
   billing_address?: Pick<
@@ -46,10 +48,45 @@ const isBillingAddressEmpty = (formData: {
 const BillingAddress = ({
   cart,
   customer,
+  translations: propTranslations,
+  locale
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
+  translations?: BillingAddressTranslations
+  locale?: string
 }) => {
+  // Hybrid translation pattern: use prop, then hook, then fallback
+  let t: (key: keyof BillingAddressTranslations) => string
+  if (propTranslations) {
+    t = (key) => propTranslations[key as string] || (key as string)
+  } else {
+    try {
+      const hookT = useTranslations('BillingAddress')
+      t = (key) => hookT(key as string)
+    } catch {
+      t = (key) => {
+        const fallbacks: Record<string, string> = {
+          heading: locale === 'fr' ? 'Adresse de facturation' : 'Billing Address',
+          firstName: locale === 'fr' ? 'Prénom' : 'First name',
+          lastName: locale === 'fr' ? 'Nom' : 'Last name',
+          company: locale === 'fr' ? 'Entreprise' : 'Company',
+          address: locale === 'fr' ? 'Adresse' : 'Address',
+          address2: locale === 'fr' ? 'Appartement, suite, etc. (Optionnel)' : 'Apartment, suite, etc. (Optional)',
+          city: locale === 'fr' ? 'Ville' : 'City',
+          postalCode: locale === 'fr' ? 'Code postal' : 'Postal code',
+          stateProvince: locale === 'fr' ? 'Province / État' : 'State / Province',
+          country: locale === 'fr' ? 'Pays' : 'Country',
+          phone: locale === 'fr' ? 'Téléphone' : 'Phone',
+          next: locale === 'fr' ? 'Suivant' : 'Next',
+          back: locale === 'fr' ? 'Retour' : 'Back',
+          billingSameAsShipping: locale === 'fr' ? "L'adresse de facturation est la même que l'adresse de livraison" : 'Billing address same as shipping address',
+        }
+        return fallbacks[key as string] || (key as string)
+      }
+    }
+  }
+
   const countryCode = useCountryCode()
 
   const { setValue, watch } = useFormContext()
@@ -87,11 +124,11 @@ const BillingAddress = ({
   const handleChange = (
     e:
       | React.ChangeEvent<
-          HTMLInputElement | HTMLInputElement | HTMLSelectElement
-        >
+        HTMLInputElement | HTMLInputElement | HTMLSelectElement
+      >
       | {
-          target: { name: string; value: string }
-        }
+        target: { name: string; value: string }
+      }
   ) => {
     setValue(e.target.name, e.target.value)
   }
@@ -142,9 +179,11 @@ const BillingAddress = ({
 
   return (
     <>
+      {/* Heading for Billing Address section */}
+      <h2 className="text-lg font-semibold mb-4">{t('heading')}</h2>
       {customer &&
-      (addressesInRegion?.length || 0) > 0 &&
-      !isBillingAddressEmpty(formData) ? (
+        (addressesInRegion?.length || 0) > 0 &&
+        !isBillingAddressEmpty(formData) ? (
         <div className="w-full border border-grayscale-200 rounded-xs p-4 flex flex-wrap gap-8 max-lg:flex-col mt-8">
           <div className="flex flex-1 gap-8">
             <Icon name="user" className="w-6 h-6 mt-2.5" />
@@ -301,81 +340,71 @@ const BillingAddress = ({
           </UiDialogTrigger>
         </div>
       ) : (
-        <div className={twMerge("grid grid-cols-2 gap-4 mt-8")}>
+        // Render form fields with translated placeholders/labels
+        <div className="grid grid-cols-2 gap-4 mb-8">
           <InputField
-            placeholder="First name"
+            placeholder={t('firstName')}
             name="billing_address.first_name"
-            inputProps={{
-              autoComplete: "given-name",
-            }}
+            inputProps={{ autoComplete: 'given-name' }}
             data-testid="billing-first-name-input"
           />
           <InputField
-            placeholder="Last name"
+            placeholder={t('lastName')}
             name="billing_address.last_name"
-            inputProps={{
-              autoComplete: "family-name",
-            }}
+            inputProps={{ autoComplete: 'family-name' }}
             data-testid="billing-last-name-input"
           />
           <InputField
-            placeholder="Address"
+            placeholder={t('address')}
             name="billing_address.address_1"
-            inputProps={{
-              autoComplete: "address-line1",
-            }}
+            inputProps={{ autoComplete: 'address-line1' }}
             data-testid="billing-address-input"
           />
           <InputField
-            placeholder="Company"
+            placeholder={t('company')}
             name="billing_address.company"
-            inputProps={{
-              autoComplete: "company",
-            }}
+            inputProps={{ autoComplete: 'organization' }}
             data-testid="billing-company-input"
           />
           <InputField
-            placeholder="Postal code"
+            placeholder={t('postalCode')}
             name="billing_address.postal_code"
-            inputProps={{
-              autoComplete: "postal-code",
-            }}
-            data-testid="billing-postal-input"
+            inputProps={{ autoComplete: 'postal-code' }}
+            data-testid="billing-postal-code-input"
           />
           <InputField
-            placeholder="City"
+            placeholder={t('city')}
             name="billing_address.city"
-            inputProps={{
-              autoComplete: "address-level2",
-            }}
+            inputProps={{ autoComplete: 'address-level2' }}
             data-testid="billing-city-input"
           />
           <CountrySelectField
             name="billing_address.country_code"
             selectProps={{
-              autoComplete: "country",
+              autoComplete: 'country',
               region: cart?.region,
-              selectedKey: formData.billing_address?.country_code || null,
-              onSelectionChange: (value) =>
+              selectedKey: formData['billing_address.country_code'] || null,
+              onSelectionChange: (value) => {
                 handleChange({
                   target: {
-                    name: "billing_address.country_code",
+                    name: 'billing_address.country_code',
                     value: `${value}`,
                   },
-                }),
+                })
+              },
             }}
             data-testid="billing-country-select"
           />
           <InputField
-            placeholder="State / Province"
+            placeholder={t('stateProvince')}
             name="billing_address.province"
-            inputProps={{ autoComplete: "address-level1" }}
+            inputProps={{ autoComplete: 'address-level1' }}
             data-testid="billing-province-input"
           />
           <InputField
-            placeholder="Phone"
+            placeholder={t('phone')}
             name="billing_address.phone"
-            inputProps={{ autoComplete: "tel" }}
+            inputProps={{ autoComplete: 'tel' }}
             data-testid="billing-phone-input"
           />
         </div>

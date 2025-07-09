@@ -417,29 +417,6 @@ const ShippingAddress = ({
           />
         </div>
       )}
-      <div>
-        <input
-          type="hidden"
-          name="same_as_billing"
-          value={checked ? "on" : "off"}
-        />
-        <UiCheckbox
-          name="same_as_billing"
-          isSelected={checked}
-          onChange={() => {
-            setValue("same_as_billing", checked ? "off" : "on")
-            onChange()
-          }}
-          data-testid="billing-address-checkbox"
-        >
-          <UiCheckboxBox>
-            <UiCheckboxIcon />
-          </UiCheckboxBox>
-          <UiCheckboxLabel>
-            {t('billingSameAsShipping')}
-          </UiCheckboxLabel>
-        </UiCheckbox>
-      </div>
     </>
   )
 }

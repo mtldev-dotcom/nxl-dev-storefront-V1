@@ -6,6 +6,7 @@ import Item from "@modules/order/components/item"
 import { OrderTotals } from "@modules/order/components/OrderTotals"
 import { listOrders } from "@lib/data/orders"
 import { getCustomer } from "@lib/data/customer"
+import { getTranslations } from 'next-intl/server'
 
 type OrderCompletedTemplateProps = {
   order: HttpTypes.StoreOrder
@@ -22,6 +23,9 @@ export default async function OrderCompletedTemplate({
     matchingOrders = orders?.filter((o) => o.id === order?.id)
   }
 
+  // Use server-side translation fetching for SSR safety
+  const t = await getTranslations('OrderConfirmation')
+
   return (
     <Layout className="py-26 md:pt-39 md:pb-36">
       <LayoutColumn
@@ -29,32 +33,30 @@ export default async function OrderCompletedTemplate({
         end={{ base: 13, lg: 11, xl: 10 }}
       >
         <h1 className="text-md md:text-2xl mb-8 md:mb-16">
-          Thank you for your order!
+          {t('successTitle')}
         </h1>
         <p className="mb-4">
-          We are pleased to confirm that your order has been successfully placed
-          and will be processed shortly.
+          {t('successMessage')}
         </p>
         <p className="mb-8">
-          We have sent you the receipt and order details via{" "}
-          <strong>e-mail</strong>.<br />
-          Your order number is <strong>#{order.display_id}</strong>.
+          {/* Correct ICU variable interpolation for order number, ensure string */}
+          {t('orderNumber', { orderNumber: String(order.display_id ?? '') })}
         </p>
         <div className="flex gap-x-6 gap-y-4 max-sm:flex-col mb-16">
           {Boolean(matchingOrders.length) && (
             <LocalizedButtonLink href={`/account/my-orders/${order.id}`}>
-              Check order details
+              {t('checkOrderDetails')}
             </LocalizedButtonLink>
           )}
           <LocalizedButtonLink href="/" variant="outline">
-            Back to home
+            {t('backToHome')}
           </LocalizedButtonLink>
         </div>
         <div className="flex max-sm:flex-col gap-x-4 gap-y-4 md:flex-col lg:flex-row mb-5">
           <div className="flex-1 overflow-hidden rounded-xs border border-grayscale-200 p-4">
             <div className="flex gap-4 items-center mb-8">
               <Icon name="map-pin" />
-              <p className="text-grayscale-500">Shipping address</p>
+              <p className="text-grayscale-500">{t('shippingAddress')}</p>
             </div>
             <p>
               {[
@@ -83,7 +85,7 @@ export default async function OrderCompletedTemplate({
           <div className="flex-1 overflow-hidden rounded-xs border border-grayscale-200 p-4">
             <div className="flex gap-4 items-center mb-8">
               <Icon name="receipt" />
-              <p className="text-grayscale-500">Billing address</p>
+              <p className="text-grayscale-500">{t('billingAddress')}</p>
             </div>
             <p>
               {[
@@ -117,7 +119,7 @@ export default async function OrderCompletedTemplate({
           <div className="flex items-center self-baseline gap-4">
             <Icon name="credit-card" />
             <div>
-              <p className="text-grayscale-500">Payment</p>
+              <p className="text-grayscale-500">{t('payment')}</p>
             </div>
           </div>
           <OrderTotals order={order} />

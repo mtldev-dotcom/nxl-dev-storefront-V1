@@ -14,8 +14,32 @@ import {
 } from "@/components/ui/Radio"
 import { useCartShippingMethods, useSetShippingMethod } from "hooks/cart"
 import { StoreCart } from "@medusajs/types"
+import { ShippingStepTranslations } from '../../../types/checkout-translations'
+import { useTranslations } from 'next-intl'
 
-const Shipping = ({ cart }: { cart: StoreCart }) => {
+const Shipping = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: ShippingStepTranslations, locale?: string }) => {
+  // Hybrid translation pattern: use prop, then hook, then fallback
+  let t: (key: keyof ShippingStepTranslations) => string
+  if (propTranslations) {
+    t = (key) => propTranslations[key as string] || (key as string)
+  } else {
+    try {
+      const hookT = useTranslations('ShippingStep')
+      t = (key) => hookT(key as string)
+    } catch {
+      t = (key) => {
+        const fallbacks: Record<string, string> = {
+          heading: locale === 'fr' ? '3. Livraison' : '3. Shipping',
+          standardShipping: locale === 'fr' ? 'Livraison standard' : 'Standard Shipping',
+          expressShipping: locale === 'fr' ? 'Livraison express' : 'Express Shipping',
+          next: locale === 'fr' ? 'Suivant' : 'Next',
+          back: locale === 'fr' ? 'Retour' : 'Back',
+        }
+        return fallbacks[key as string] || (key as string)
+      }
+    }
+  }
+
   const [error, setError] = useState<string | null>(null)
 
   const searchParams = useSearchParams()
@@ -56,7 +80,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
               isOpen && "font-semibold"
             )}
           >
-            3. Shipping
+            {t('heading')}
           </p>
         </div>
         {!isOpen &&
@@ -69,6 +93,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
                 router.push(pathname + "?step=shipping", { scroll: false })
               }}
             >
+              {/* Use translation for 'Change' if needed */}
               Change
             </Button>
           )}
@@ -77,8 +102,8 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
         availableShippingMethods?.length === 0 ? (
           <div>
             <p className="text-red-900">
-              There are no shipping methods available for your location. Please
-              contact us for further assistance.
+              {/* This message could also be translated if desired */}
+              There are no shipping methods available for your location. Please contact us for further assistance.
             </p>
           </div>
         ) : (
@@ -97,7 +122,12 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
                   className="gap-4"
                 >
                   <UiRadioBox />
-                  <UiRadioLabel>{option.name}</UiRadioLabel>
+                  {/* Use translation for shipping method names if they match known keys */}
+                  <UiRadioLabel>
+                    {option.name === 'Standard Shipping' ? t('standardShipping') :
+                      option.name === 'Express Shipping' ? t('expressShipping') :
+                        option.name}
+                  </UiRadioLabel>
                   <UiRadioLabel className="ml-auto group-data-[selected=true]:font-normal">
                     {convertToLocale({
                       amount: option.amount!,
@@ -115,7 +145,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
               isLoading={isPending}
               isDisabled={!cart.shipping_methods?.[0]}
             >
-              Next
+              {t('next')}
             </Button>
           </div>
         )
@@ -123,7 +153,7 @@ const Shipping = ({ cart }: { cart: StoreCart }) => {
         (cart.shipping_methods?.length ?? 0) > 0 &&
         selectedShippingMethod ? (
         <ul className="flex max-sm:flex-col flex-wrap gap-y-2 gap-x-28">
-          <li className="text-grayscale-500">Shipping</li>
+          <li className="text-grayscale-500">{t('heading')}</li>
           <li className="text-grayscale-600">{selectedShippingMethod.name}</li>
         </ul>
       ) : null}

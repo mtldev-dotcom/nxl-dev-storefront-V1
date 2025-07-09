@@ -23,8 +23,33 @@ import {
   useSetPaymentMethod,
 } from "hooks/cart"
 import { StoreCart, StorePaymentSession } from "@medusajs/types"
+import { PaymentStepTranslations } from '../../../types/checkout-translations'
+import { useTranslations } from 'next-intl'
 
-const Payment = ({ cart }: { cart: StoreCart }) => {
+const Payment = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: PaymentStepTranslations, locale?: string }) => {
+  // Hybrid translation pattern: use prop, then hook, then fallback
+  let t: (key: keyof PaymentStepTranslations) => string
+  if (propTranslations) {
+    t = (key) => propTranslations[key as string] || (key as string)
+  } else {
+    try {
+      const hookT = useTranslations('PaymentStep')
+      t = (key) => hookT(key as string)
+    } catch {
+      t = (key) => {
+        const fallbacks: Record<string, string> = {
+          heading: locale === 'fr' ? '4. Paiement' : '4. Payment',
+          cardNumber: locale === 'fr' ? 'Numéro de carte' : 'Card Number',
+          nameOnCard: locale === 'fr' ? 'Nom sur la carte' : 'Name on Card',
+          expiry: locale === 'fr' ? 'Expiration' : 'Expiry',
+          cvc: locale === 'fr' ? 'CVC' : 'CVC',
+          pay: locale === 'fr' ? 'Payer' : 'Pay',
+          back: locale === 'fr' ? 'Retour' : 'Back',
+        }
+        return fallbacks[key as string] || (key as string)
+      }
+    }
+  }
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [cardBrand, setCardBrand] = useState<string | null>(null)
@@ -139,11 +164,12 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
               isOpen && "font-semibold"
             )}
           >
-            4. Payment
+            {t('heading')}
           </p>
         </div>
         {!isOpen && paymentReady && (
           <Button variant="link" onPress={handleEdit}>
+            {/* Use translation for 'Change' if needed */}
             Change
           </Button>
         )}
@@ -160,7 +186,6 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
                 .sort((a, b) => {
                   return a.id > b.id ? 1 : -1
                 })
-
                 .map((paymentMethod) => {
                   return (
                     <PaymentContainer
@@ -177,7 +202,7 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
                   (paymentMethod?.card?.brand ? (
                     <Input
                       value={"**** **** **** " + paymentMethod?.card.last4}
-                      placeholder="Card number"
+                      placeholder={t('cardNumber')}
                       disabled={true}
                     />
                   ) : (
@@ -186,7 +211,7 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
                       onChange={(e) => {
                         setCardBrand(
                           e.brand &&
-                            e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
+                          e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
                         )
                         setError(e.error?.message || null)
                         setCardComplete(e.complete)
@@ -195,9 +220,18 @@ const Payment = ({ cart }: { cart: StoreCart }) => {
                   ))}
               </div>
             )}
+            {/* Add translated button for payment submission */}
+            <Button
+              className="mt-8"
+              onPress={() => router.push(pathname + '?step=review', { scroll: false })}
+              isDisabled={!paymentReady}
+            >
+              {t('continueToReview')}
+            </Button>
           </>
         )}
-
+        {/* Add translated button for payment submission if needed */}
+        {/* <Button>{t('pay')}</Button> */}
         {/* {paidByGiftcard && (
           <div className="flex gap-10">
             <div className="text-grayscale-500">Payment method</div>

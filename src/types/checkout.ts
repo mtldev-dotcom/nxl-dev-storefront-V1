@@ -13,6 +13,7 @@ export interface CheckoutDeliveryTranslations {
     phone: string
     billingSameAsShipping: string
     next: string
+    // Add any other translation keys you use in checkout
 }
 
 export interface CheckoutShippingTranslations {

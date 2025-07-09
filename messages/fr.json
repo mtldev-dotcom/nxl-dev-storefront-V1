@@ -354,11 +354,9 @@
     "stateProvince": "Province / État",
     "phone": "Téléphone",
     "billingSameAsShipping": "L'adresse de facturation est la même que l'adresse de livraison",
-    "next": "Suivant",
     "stepShipping": "3. Livraison",
     "noShippingMethods": "Aucune méthode de livraison n'est disponible pour votre emplacement. Veuillez nous contacter pour obtenir de l'aide.",
     "shipping": "Livraison",
-    "change": "Modifier",
     "stepPayment": "4. Paiement",
     "paymentMethods": "Méthodes de paiement",
     "cardNumber": "Numéro de carte",
@@ -368,5 +366,66 @@
     "view": "Voir",
     "placeOrder": "Passer la commande",
     "confirmText": "En cliquant sur le bouton Passer la commande, vous confirmez avoir lu, compris et accepté nos Conditions d'utilisation, Conditions de vente et Politique de retour, et reconnaissez avoir lu la Politique de confidentialité de Medusa Store."
+  },
+  "BillingAddress": {
+    "heading": "Adresse de facturation",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "company": "Entreprise",
+    "address": "Adresse",
+    "address2": "Appartement, suite, etc. (Optionnel)",
+    "city": "Ville",
+    "postalCode": "Code postal",
+    "stateProvince": "Province / État",
+    "country": "Pays",
+    "phone": "Téléphone",
+    "next": "Suivant",
+    "back": "Retour",
+    "billingSameAsShipping": "L'adresse de facturation est la même que l'adresse de livraison"
+  },
+  "ShippingStep": {
+    "heading": "3. Livraison",
+    "standardShipping": "Livraison standard",
+    "expressShipping": "Livraison express",
+    "next": "Suivant",
+    "back": "Retour"
+  },
+  "PaymentStep": {
+    "heading": "4. Paiement",
+    "cardNumber": "Numéro de carte",
+    "nameOnCard": "Nom sur la carte",
+    "expiry": "Expiration",
+    "cvc": "CVC",
+    "pay": "Payer",
+    "back": "Retour",
+    "continueToReview": "Continuer vers la revue"
+  },
+  "ReviewStep": {
+    "heading": "5. Revue",
+    "placeOrder": "Passer la commande",
+    "back": "Retour",
+    "confirmText": "En cliquant sur le bouton Passer la commande, vous confirmez avoir lu, compris et accepté nos Conditions d'utilisation, Conditions de vente et Politique de retour, et reconnaissez avoir lu la Politique de confidentialité de Medusa Store."
+  },
+  "OrderSummary": {
+    "order": "Commande",
+    "editCart": "Modifier le panier",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "taxes": "Taxes",
+    "total": "Total",
+    "discountCode": "Code promo",
+    "apply": "Appliquer",
+    "variant": "Variante",
+    "quantity": "Quantité"
+  },
+  "OrderConfirmation": {
+    "successTitle": "Votre commande a été approuvée avec succès !",
+    "successMessage": "Merci pour votre achat. Nous vous avons envoyé un courriel de confirmation avec les détails de votre commande.",
+    "orderNumber": "Votre numéro de commande est #{orderNumber}.",
+    "shippingAddress": "Adresse de livraison",
+    "billingAddress": "Adresse de facturation",
+    "payment": "Paiement",
+    "backToHome": "Retour à l'accueil",
+    "checkOrderDetails": "Voir les détails de la commande"
   }
 } 

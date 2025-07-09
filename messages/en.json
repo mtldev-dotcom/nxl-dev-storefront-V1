@@ -368,5 +368,66 @@
     "view": "View",
     "placeOrder": "Place Order",
     "confirmText": "By clicking the Place Order button, you confirm that you have read, understand and accept our Terms of Use, Terms of Sale and Returns Policy and acknowledge that you have read Medusa Store's Privacy Policy."
+  },
+  "BillingAddress": {
+    "heading": "Billing Address",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "company": "Company",
+    "address": "Address",
+    "address2": "Apartment, suite, etc. (Optional)",
+    "city": "City",
+    "postalCode": "Postal code",
+    "stateProvince": "State / Province",
+    "country": "Country",
+    "phone": "Phone",
+    "next": "Next",
+    "back": "Back",
+    "billingSameAsShipping": "Billing address same as shipping address"
+  },
+  "ShippingStep": {
+    "heading": "3. Shipping",
+    "standardShipping": "Standard Shipping",
+    "expressShipping": "Express Shipping",
+    "next": "Next",
+    "back": "Back"
+  },
+  "PaymentStep": {
+    "heading": "4. Payment",
+    "cardNumber": "Card Number",
+    "nameOnCard": "Name on Card",
+    "expiry": "Expiry",
+    "cvc": "CVC",
+    "pay": "Pay",
+    "back": "Back",
+    "continueToReview": "Continue to review"
+  },
+  "ReviewStep": {
+    "heading": "5. Review",
+    "placeOrder": "Place Order",
+    "back": "Back",
+    "confirmText": "By clicking the Place Order button, you confirm that you have read, understand and accept our Terms of Use, Terms of Sale and Returns Policy and acknowledge that you have read Medusa Store's Privacy Policy."
+  },
+  "OrderSummary": {
+    "order": "Order",
+    "editCart": "Edit cart",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "taxes": "Taxes",
+    "total": "Total",
+    "discountCode": "Discount code",
+    "apply": "Apply",
+    "variant": "Variant",
+    "quantity": "Quantity"
+  },
+  "OrderConfirmation": {
+    "successTitle": "Your order was successfully approved!",
+    "successMessage": "Thank you for your purchase. We’ve sent you a confirmation email with your order details.",
+    "orderNumber": "Your order number is #{orderNumber}.",
+    "shippingAddress": "Shipping address",
+    "billingAddress": "Billing address",
+    "payment": "Payment",
+    "backToHome": "Back to home",
+    "checkOrderDetails": "Check order details"
   }
 } 

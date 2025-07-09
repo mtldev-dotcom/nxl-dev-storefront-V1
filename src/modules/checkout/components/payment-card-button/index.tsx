@@ -198,7 +198,7 @@ const PaymentMethodButton = ({
     >
       {isStripe(selectedPaymentMethod)
         ? "Enter card details"
-        : "Continue to review"}
+        : ""}
     </Button>
   )
 }
