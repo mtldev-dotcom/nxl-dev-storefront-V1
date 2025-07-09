@@ -35,7 +35,7 @@ type Params = {
 export default async function StorePage({ searchParams, params }: Params) {
   const { countryCode, locale } = await params
   const { sortBy, page, collection, category, type } = await searchParams
-
+  console.log(process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL)
   return (
     <StoreTemplate
       sortBy={sortBy}

@@ -28,6 +28,10 @@ const nextConfig = {
     staticGenerationMaxConcurrency: 1,
   },
   images: {
+    domains: [
+      "medusa-public-images.s3.eu-west-1.amazonaws.com",
+      // Add other domains as needed
+    ],
     remotePatterns: [
       {
         protocol: "http",
