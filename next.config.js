@@ -30,6 +30,7 @@ const nextConfig = {
   images: {
     domains: [
       "medusa-public-images.s3.eu-west-1.amazonaws.com",
+      "bucket-production-364e.up.railway.app",
       // Add other domains as needed
     ],
     remotePatterns: [
