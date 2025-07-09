@@ -5,6 +5,7 @@ import React from "react"
 
 import { convertToLocale } from "@lib/util/money"
 import { twJoin, twMerge } from "tailwind-merge"
+import { useTranslations } from 'next-intl'
 
 type CartTotalsProps = {
   cart: HttpTypes.StoreCart
@@ -27,6 +28,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({
     gift_card_total,
   } = cart
 
+  // Use translations for all user-facing strings
+  const t = useTranslations('CartTotals')
+
   return (
     <div className={className}>
       <div
@@ -36,7 +40,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({
         )}
       >
         <div className="flex justify-between">
-          <p className="text-grayscale-500">Subtotal:</p>
+          <p className="text-grayscale-500">{t('subtotal')}</p>
           <p
             className="self-end"
             data-testid="cart-subtotal"
@@ -47,7 +51,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({
         </div>
         {!!discount_total && (
           <div className="flex justify-between">
-            <p className="text-grayscale-500">Discount:</p>
+            <p className="text-grayscale-500">{t('discount')}</p>
             <p
               className="self-end"
               data-testid="cart-discount"
@@ -59,7 +63,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({
           </div>
         )}
         <div className="flex justify-between">
-          <p className="text-grayscale-500">Shipping:</p>
+          <p className="text-grayscale-500">{t('shipping')}</p>
           <p
             className="self-end"
             data-testid="cart-shipping"
@@ -69,7 +73,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({
           </p>
         </div>
         <div className="flex justify-between">
-          <p className="text-grayscale-500">Taxes:</p>
+          <p className="text-grayscale-500">{t('taxes')}</p>
           <p
             className="self-end"
             data-testid="cart-taxes"
@@ -80,7 +84,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({
         </div>
         {!!gift_card_total && (
           <div className="flex justify-between">
-            <p className="text-grayscale-500">Gift card:</p>
+            <p className="text-grayscale-500">{t('giftCard')}</p>
             <p
               className="self-end"
               data-testid="cart-gift-card-amount"
@@ -99,7 +103,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({
         )}
       />
       <div className="flex justify-between text-md font-semibold">
-        <p>Total:</p>
+        <p>{t('total')}</p>
         <p data-testid="cart-total" data-value={total || 0}>
           {convertToLocale({ amount: total ?? 0, currency_code })}
         </p>

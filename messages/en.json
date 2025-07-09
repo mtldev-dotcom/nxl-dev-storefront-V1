@@ -314,5 +314,23 @@
     "section9Content": "If you have any questions about these Terms of Use, please contact us at:",
     "contactEmail": "Email: legal@nextxlevel.ca",
     "contactAddress": "Address: 123 Queen Street West, Suite 800, Toronto, ON M5H 2M9, Canada"
+  },
+  "Cart": {
+    "title": "Cart",
+    "proceedToCheckout": "Proceed to checkout",
+    "empty": "You don't have anything in your cart. Let's change that, use the link below to start browsing our products.",
+    "exploreProducts": "Explore products",
+    "openCart": "Open cart",
+    "closeCart": "Close cart"
+  },
+  "CartTotals": {
+    "subtotal": "Subtotal:",
+    "discount": "Discount:",
+    "shipping": "Shipping:",
+    "taxes": "Taxes:",
+    "giftCard": "Gift card:",
+    "total": "Total:",
+    "discountCode": "Discount code",
+    "apply": "Apply"
   }
 } 

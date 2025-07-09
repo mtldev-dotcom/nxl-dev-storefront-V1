@@ -12,6 +12,7 @@ import { Icon } from "@/components/Icon"
 import { getCheckoutStep } from "@modules/cart/utils/getCheckoutStep"
 import { useCart, useCartQuantity } from "hooks/cart"
 import { withReactQueryProvider } from "@lib/util/react-query"
+import { useTranslations } from 'next-intl'
 
 export const CartDrawer = withReactQueryProvider(() => {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = React.useState(false)
@@ -22,13 +23,16 @@ export const CartDrawer = withReactQueryProvider(() => {
 
   const { data: quantity, isPending: pendingQuantity } = useCartQuantity()
 
+  // Use translations for all user-facing strings
+  const t = useTranslations('Cart')
+
   return (
     <>
       <Button
         onPress={() => setIsCartDrawerOpen(true)}
         variant="ghost"
         className="p-1 md:text-white group-data-[sticky=true]:md:text-black"
-        aria-label="Open cart"
+        aria-label={t('openCart')}
       >
         {pendingQuantity ? (
           <Icon name="case" className=" w-6 h-6" />
@@ -51,9 +55,9 @@ export const CartDrawer = withReactQueryProvider(() => {
           <>
             <div className="flex justify-between mb-2">
               <div>
-                <p className="text-md">Cart</p>
+                <p className="text-md">{t('title')}</p>
               </div>
-              <button onClick={close} aria-label="Close cart">
+              <button onClick={close} aria-label={t('closeCart')}>
                 <Icon name="close" className="w-6" />
               </button>
             </div>
@@ -84,7 +88,7 @@ export const CartDrawer = withReactQueryProvider(() => {
                     isFullWidth
                     className="mt-4"
                   >
-                    Proceed to checkout
+                    {t('proceedToCheckout')}
                   </LocalizedButtonLink>
                 </div>
               </>
@@ -95,8 +99,7 @@ export const CartDrawer = withReactQueryProvider(() => {
             ) : (
               <>
                 <p className="md:text-sm max-sm:mr-10 mb-6 mt-2">
-                  You don&apos;t have anything in your cart. Let&apos;s change
-                  that, use the link below to start browsing our products.
+                  {t('empty')}
                 </p>
                 <div>
                   <LocalizedLink
@@ -105,7 +108,7 @@ export const CartDrawer = withReactQueryProvider(() => {
                       setIsCartDrawerOpen(false)
                     }}
                   >
-                    Explore products
+                    {t('exploreProducts')}
                   </LocalizedLink>
                 </div>
               </>

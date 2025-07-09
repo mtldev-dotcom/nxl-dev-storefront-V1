@@ -3,6 +3,7 @@
 import * as React from "react"
 import { usePathname } from "next/navigation"
 import { useCountryCode } from "hooks/country-code"
+import clsx from 'clsx'
 
 export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -82,16 +83,25 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
     }
   }, [pathName, isPageWithHeroImage, isAlwaysSticky])
 
+  // Build className deterministically for SSR/client match using clsx
+  const headerClass = clsx(
+    "top-0 left-0 w-full transition-colors fixed z-40 group",
+    "max-md:bg-grayscale-50",
+    "data-[light=true]:md:text-white",
+    "data-[sticky=true]:md:bg-white",
+    "data-[sticky=true]:md:text-black",
+    "data-[sticky=true]:shadow-lg",
+    "data-[sticky=true]:bg-white/95",
+    "data-[sticky=true]:backdrop-blur",
+    "data-[sticky=true]:transition-all",
+    "data-[sticky=true]:duration-200",
+    isProductPage && "bg-white shadow-md product-header"
+  );
+
   return (
     <div
       id="site-header"
-      className={[
-        "top-0 left-0 w-full transition-colors fixed z-40 group",
-        // Enhanced sticky effect: shadow, bg opacity, blur, smooth transition
-        "data-[sticky=true]:shadow-lg data-[sticky=true]:bg-white/95 data-[sticky=true]:backdrop-blur data-[sticky=true]:transition-all data-[sticky=true]:duration-200",
-        "max-md:bg-grayscale-50 data-[light=true]:md:text-white data-[sticky=true]:md:bg-white data-[sticky=true]:md:text-black",
-        isProductPage ? 'bg-white shadow-md product-header' : ''
-      ].join(' ')}
+      className={headerClass}
       data-light={isPageWithHeroImage}
       data-sticky={isAlwaysSticky}
     >

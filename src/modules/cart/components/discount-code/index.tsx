@@ -9,6 +9,7 @@ import { SubmitButton } from "@modules/common/components/submit-button"
 import { z } from "zod"
 import { useApplyPromotions } from "hooks/cart"
 import { withReactQueryProvider } from "@lib/util/react-query"
+import { useTranslations } from 'next-intl'
 
 type DiscountCodeProps = {
   cart: HttpTypes.StoreCart
@@ -35,16 +36,19 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart, className }) => {
     await applyPromotions.mutateAsync(codes)
   }
 
+  // Use translations for placeholder and button
+  const t = useTranslations('CartTotals')
+
   return (
     <Form onSubmit={addPromotionCode} schema={codeFormSchema}>
       <div className={twMerge("flex gap-2 mt-10", className)}>
         <InputField
           name="code"
           inputProps={{ autoFocus: false, uiSize: "md" }}
-          placeholder="Discount code"
+          placeholder={t('discountCode')}
           className="flex flex-1 flex-col"
         />
-        <SubmitButton>Apply</SubmitButton>
+        <SubmitButton>{t('apply')}</SubmitButton>
       </div>
     </Form>
   )
