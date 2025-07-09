@@ -41,6 +41,28 @@
     /* Firefox */
   }
 
+  /* Line Clamp Utilities for Text Truncation */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
   /* Text Shadow Utilities for Hero Section */
   .text-shadow {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -65,6 +87,27 @@
 
   .border-nxl-gold {
     border-color: var(--color-nxl-gold);
+  }
+
+  /* Enhanced Hover Effects for Product Cards */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Enhanced Focus Styles for Better Accessibility */
+  .focus-enhanced:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+  }
+
+  /* Smooth Scroll for Anchor Links */
+  .smooth-scroll {
+    scroll-behavior: smooth;
   }
 }
 
@@ -179,6 +222,25 @@
 
   .txt-xlarge-plus {
     @apply text-[1.125rem] leading-[1.6875rem] font-medium font-inter;
+  }
+
+  /* Enhanced Product Grid Responsive Design */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .product-grid {
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
   }
 
   /* Gold Lines Animation */
@@ -296,7 +358,7 @@
     }
   }
 
-  /* Animation Classes */
+  /* Enhanced Animation Classes */
   .animate-slide-in-delay-1 {
     animation: slideInUp 0.8s ease-out 0.5s forwards;
   }
@@ -388,5 +450,22 @@
 
   .btn-enhanced:hover::before {
     left: 100%;
+  }
+
+  /* Enhanced Store Page Specific Styles */
+  .store-section {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  .store-title {
+    @apply text-2xl md:text-3xl lg:text-4xl font-cinzel font-normal text-center mb-8 md:mb-12;
+  }
+
+  .filter-pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white border border-grayscale-300 hover:border-nxl-gold transition-colors duration-200;
+  }
+
+  .filter-pill.active {
+    @apply bg-nxl-gold text-white border-nxl-gold;
   }
 }

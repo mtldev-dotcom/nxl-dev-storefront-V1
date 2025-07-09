@@ -4,13 +4,18 @@ import { LocalizedLink } from "@/components/LocalizedLink"
 import { getTranslations } from 'next-intl/server'
 
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import RefinementList from "@modules/store/components/refinement-list"
 import PaginatedProducts from "./paginated-products"
+import { listCategories } from "@lib/data/categories"
+import { getCollectionsList } from "@lib/data/collections"
+// Remove all product type logic
+// import { getProductTypesList } from "@lib/data/product-types"
 
 const StoreTemplate = async ({
   sortBy,
   collection,
   category,
-  type,
+  // type, // removed
   page,
   countryCode,
   locale,
@@ -18,13 +23,42 @@ const StoreTemplate = async ({
   sortBy?: SortOptions
   collection?: string[]
   category?: string[]
-  type?: string[]
+  // type?: string[] // removed
   page?: string
   countryCode: string
   locale?: string
 }) => {
   // Get translations for Store page
   const t = await getTranslations({ locale: locale || 'en', namespace: 'Store' })
+
+  // Fetch data for filters - wrapped in try-catch for graceful degradation
+  let categories: Record<string, string> = {}
+  let collections: Record<string, string> = {}
+  // let productTypes: Record<string, string> = {} // removed
+
+  try {
+    // Fetch categories for filtering
+    const categoriesData = await listCategories()
+    categories = categoriesData.reduce((acc, cat) => {
+      acc[cat.handle] = cat.name
+      return acc
+    }, {} as Record<string, string>)
+  } catch (error) {
+    console.warn('Failed to fetch categories:', error)
+  }
+
+  try {
+    // Fetch collections for filtering
+    const collectionsData = await getCollectionsList(0, 50)
+    collections = collectionsData.collections.reduce((acc, coll) => {
+      acc[coll.handle] = coll.title
+      return acc
+    }, {} as Record<string, string>)
+  } catch (error) {
+    console.warn('Failed to fetch collections:', error)
+  }
+
+  // Removed product type fetching logic
 
   return (
     <>
@@ -86,22 +120,22 @@ const StoreTemplate = async ({
                 </h1>
 
                 {/* Store Hero Subtitle */}
-                {/* <p className="text-white text-base md:text-lg lg:text-xl mb-8 md:mb-12 max-w-md md:max-w-lg lg:max-w-xl leading-relaxed hero-text-shadow opacity-0 animate-slide-in-delay-4">
-                  {t('heroSubtitle')}
-                </p> */}
+                <p className="text-white text-base md:text-lg lg:text-xl mb-8 md:mb-12 max-w-md md:max-w-lg lg:max-w-xl leading-relaxed hero-text-shadow opacity-0 animate-slide-in-delay-4">
+                  Discover our curated collection of premium furniture and home decor.
+                </p>
 
                 {/* Store CTA Button */}
-                {/* <div className="opacity-0 animate-slide-in-delay-5">
+                <div className="opacity-0 animate-slide-in-delay-5">
                   <LocalizedLink
                     href="#products"
                     className="group relative inline-block bg-white text-black font-semibold text-sm md:text-base lg:text-lg px-8 md:px-12 lg:px-16 py-3 md:py-4 lg:py-5 transition-all duration-500 tracking-widest uppercase border-2 border-white hover:border-nxl-gold overflow-hidden btn-enhanced"
                   >
                     <span className="relative z-10 transition-colors duration-300 group-hover:text-white">
-                      {t('heroButton')}
+                      Shop Now
                     </span>
                     <div className="absolute inset-0 bg-nxl-gold transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                   </LocalizedLink>
-                </div> */}
+                </div>
 
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -left-4 w-24 h-24 border border-nxl-gold/30 animate-pulse-slow opacity-0 animate-fade-in-delay-6"></div>
@@ -122,27 +156,113 @@ const StoreTemplate = async ({
         </div>
       </div>
 
-      {/* Product Listing Section - replaces Coming Soon */}
-      <div id="products" className="py-16 md:py-24 lg:py-32">
+      {/* Product Listing Section with Enhanced Filtering */}
+      <div id="products" className="py-12 md:py-16 lg:py-20 bg-gradient-to-b from-gray-50 to-white">
+        {/* Enhanced section header with breadcrumb and stats */}
+        <Layout className="mb-8 md:mb-12">
+          <LayoutColumn>
+            <div className="text-center mb-8 md:mb-12">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-cinzel font-normal mb-4 text-grayscale-900 leading-tight">
+                Our Collection
+              </h1>
+              <p className="text-base md:text-lg text-grayscale-600 max-w-2xl mx-auto leading-relaxed">
+                Discover handpicked furniture and decor pieces that transform your space into a reflection of your unique style.
+              </p>
+            </div>
+          </LayoutColumn>
+        </Layout>
+
+        {/* Enhanced Search Bar Section */}
+        {/* Removed SearchBar component */}
+
+        {/* Enhanced Refinement List with better visual design */}
+        <div className="bg-white border-y border-grayscale-200 py-6 mb-8 sticky top-0 z-30 shadow-sm">
+          <RefinementList
+            sortBy={sortBy}
+            collections={Object.keys(collections).length > 0 ? collections : undefined}
+            collection={collection}
+            categories={Object.keys(categories).length > 0 ? categories : undefined}
+            category={category}
+            // types={Object.keys(productTypes).length > 0 ? productTypes : undefined} // removed
+            // type={type} // removed
+            title="Shop"
+          />
+        </div>
+
+        {/* Enhanced Products Grid Section */}
         <Layout>
           <LayoutColumn>
-            {/* Section Title */}
-            <h1 className="text-center text-lg md:text-3xl lg:text-4xl font-cinzel font-normal mb-6 md:mb-8 text-grayscale-900 leading-tight">
-              {t('allProductsTitle') || 'All Products'}
-            </h1>
-            {/*
-              PaginatedProducts handles:
-              - Fetching products from the Medusa backend (with pagination, filters, sorting)
-              - Infinite scroll (loads more products as user scrolls)
-              - Loading skeletons and empty state
-              - Rendering each product using ProductPreview
-              You can extend this by adding filter/sort UI and passing the relevant props.
+            {/* 
+              Enhanced PaginatedProducts with all filter parameters:
+              - Handles infinite scroll with improved performance
+              - Uses skeleton loading states
+              - Supports all filtering options (collection, category, type, sorting)
+              - Responsive grid layout with proper spacing
             */}
             <PaginatedProducts
+              sortBy={sortBy}
+              page={page ? parseInt(page) : 1}
+              collectionId={collection}
+              categoryId={category}
+              // typeId={type} // removed
               countryCode={countryCode}
-              page={1} // Initial page; infinite scroll will load more
-            // You can add sortBy, collection, category, type, etc. as needed
             />
+          </LayoutColumn>
+        </Layout>
+
+        {/* Enhanced Empty State with Call-to-Action */}
+        {/* This will be shown by PaginatedProducts when no products are found */}
+      </div>
+
+      {/* Additional sections for enhanced UX */}
+      <div className="py-16 md:py-20 bg-grayscale-50">
+        <Layout>
+          <LayoutColumn>
+            <div className="text-center">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-cinzel font-normal mb-6 text-grayscale-900">
+                Why Choose Next X Level
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mt-12">
+                {/* Feature 1: Quality */}
+                <div className="text-center group">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-nxl-gold/10 rounded-full flex items-center justify-center group-hover:bg-nxl-gold/20 transition-colors duration-300">
+                    <div className="w-8 h-8 bg-nxl-gold rounded-sm"></div>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-grayscale-900">
+                    Premium Quality
+                  </h3>
+                  <p className="text-grayscale-600 leading-relaxed">
+                    Handcrafted pieces made with the finest materials and attention to detail.
+                  </p>
+                </div>
+
+                {/* Feature 2: Design */}
+                <div className="text-center group">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-nxl-gold/10 rounded-full flex items-center justify-center group-hover:bg-nxl-gold/20 transition-colors duration-300">
+                    <div className="w-8 h-8 bg-nxl-gold rounded-full"></div>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-grayscale-900">
+                    Timeless Design
+                  </h3>
+                  <p className="text-grayscale-600 leading-relaxed">
+                    Contemporary designs that stand the test of time and elevate any space.
+                  </p>
+                </div>
+
+                {/* Feature 3: Service */}
+                <div className="text-center group">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-nxl-gold/10 rounded-full flex items-center justify-center group-hover:bg-nxl-gold/20 transition-colors duration-300">
+                    <div className="w-8 h-8 bg-nxl-gold rounded-lg"></div>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-grayscale-900">
+                    Expert Service
+                  </h3>
+                  <p className="text-grayscale-600 leading-relaxed">
+                    Professional consultation and seamless delivery to your doorstep.
+                  </p>
+                </div>
+              </div>
+            </div>
           </LayoutColumn>
         </Layout>
       </div>

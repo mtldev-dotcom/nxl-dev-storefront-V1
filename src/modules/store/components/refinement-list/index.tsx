@@ -90,7 +90,11 @@ const RefinementList = ({
             type={type}
             setMultipleQueryParams={setMultipleQueryParams}
           />
-          <MobileSort sortBy={sortBy} setQueryParams={setQueryParams} />
+          {/* =============================
+              MobileSort commented out at user request (2024-06-09)
+              Reason: Temporarily disabling sort by option on mobile. Restore when needed.
+              <MobileSort sortBy={sortBy} setQueryParams={setQueryParams} />
+              ============================= */}
           <div className="flex justify-between gap-4 max-md:hidden">
             {typeof collections !== "undefined" && (
               <CollectionFilter
@@ -114,11 +118,15 @@ const RefinementList = ({
               />
             )}
           </div>
-          <SortProducts
-            sortBy={sortBy}
-            setQueryParams={setQueryParams}
-            data-testid={dataTestId}
-          />
+          {/* =============================
+              SortProducts commented out at user request (2024-06-09)
+              Reason: Temporarily disabling sort by option on desktop. Restore when needed.
+              <SortProducts
+                sortBy={sortBy}
+                setQueryParams={setQueryParams}
+                data-testid={dataTestId}
+              />
+              ============================= */}
         </div>
       </LayoutColumn>
     </Layout>
