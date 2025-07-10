@@ -220,14 +220,26 @@ const Payment = ({ cart, translations: propTranslations, locale }: { cart: Store
                   ))}
               </div>
             )}
-            {/* Add translated button for payment submission */}
-            <Button
-              className="mt-8"
-              onPress={() => router.push(pathname + '?step=review', { scroll: false })}
-              isDisabled={!paymentReady}
-            >
-              {t('continueToReview')}
-            </Button>
+            {/* Only render one button: Stripe gets PaymentCardButton, others get generic Button */}
+            {isStripeFunc(selectedPaymentMethod) ? (
+              <PaymentCardButton
+                setError={setError}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                selectedPaymentMethod={selectedPaymentMethod}
+                createQueryString={createQueryString}
+                cart={cart}
+                cardComplete={cardComplete}
+              />
+            ) : (
+              <Button
+                className="mt-8"
+                onPress={() => router.push(pathname + '?step=review', { scroll: false })}
+                isDisabled={!paymentReady}
+              >
+                {t('continueToReview')}
+              </Button>
+            )}
           </>
         )}
         {/* Add translated button for payment submission if needed */}
@@ -253,15 +265,6 @@ const Payment = ({ cart, translations: propTranslations, locale }: { cart: Store
             Change card
           </Button>
         )}
-        <PaymentCardButton
-          setError={setError}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          selectedPaymentMethod={selectedPaymentMethod}
-          createQueryString={createQueryString}
-          cart={cart}
-          cardComplete={cardComplete}
-        />
       </div>
 
       <div className={isOpen ? "hidden" : "block"}>
