@@ -25,7 +25,8 @@ export interface ShippingStepTranslations {
     back: string
 }
 
-// Translation keys for the Payment step
+// This interface defines the shape of translation objects for the payment step in checkout.
+// Add or adjust keys as needed for your localization needs.
 export interface PaymentStepTranslations {
     heading: string
     cardNumber: string
@@ -34,6 +35,7 @@ export interface PaymentStepTranslations {
     cvc: string
     pay: string
     back: string
+    continueToReview?: string // Optional, in case not all locales use it
 }
 
 // Translation keys for the Review step

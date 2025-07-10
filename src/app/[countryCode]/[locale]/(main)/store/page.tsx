@@ -51,7 +51,7 @@ export default async function StorePage({ searchParams, params }: Params) {
       category={
         !category ? undefined : Array.isArray(category) ? category : [category]
       }
-      type={!type ? undefined : Array.isArray(type) ? type : [type]}
+    //type={!type ? undefined : Array.isArray(type) ? type : [type]}
     />
   )
 }
