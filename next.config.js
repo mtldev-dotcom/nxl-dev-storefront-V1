@@ -28,19 +28,19 @@ const nextConfig = {
     staticGenerationMaxConcurrency: 1,
   },
   images: {
-    domains: [
-      "bucket-production-364e.up.railway.app",
-      // Add other domains as needed
-    ],
+    // Use remotePatterns instead of deprecated domains array
     remotePatterns: [
       {
         protocol: "http",
         hostname: "localhost",
+        pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "bucket-production-364e.up.railway.ap",
+        hostname: "bucket-production-364e.up.railway.app", // fixed typo from .ap to .app
+        pathname: "/**",
       },
+      // Add more patterns as needed
     ],
   },
 }
