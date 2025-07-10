@@ -11,6 +11,9 @@ type StripeWrapperProps = {
   children: React.ReactNode
 }
 
+// StripeWrapper wraps its children in <Elements> from @stripe/react-stripe-js.
+// Any component using useStripe() or Stripe UI elements MUST be a descendant of this component.
+// If you render payment forms outside this wrapper, you will get a context error.
 const StripeWrapper: React.FC<StripeWrapperProps> = ({
   paymentSession,
   stripeKey,

@@ -21,6 +21,11 @@ const stripePromise = stripeKey ? loadStripe(stripeKey) : null
 
 const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
 
+// IMPORTANT: This Wrapper ensures that all payment components (Stripe, PayPal, etc.)
+// are wrapped in the correct provider context. For Stripe, it wraps children in <Elements>
+// via StripeWrapper. Any component using useStripe() or Stripe UI elements MUST be a child
+// of this Wrapper, or you will get a runtime error ("Could not find Elements context").
+// Do NOT render payment forms outside this Wrapper (e.g., in modals/portals outside the tree).
 const Wrapper: React.FC<WrapperProps> = ({ children, cart }) => {
   const paymentSession = cart.payment_collection?.payment_sessions?.find(
     (s) => s.status === "pending"
