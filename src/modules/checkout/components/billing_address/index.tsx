@@ -13,7 +13,7 @@ import { UpsertAddressForm } from "@modules/account/components/UpsertAddressForm
 import { useCountryCode } from "hooks/country-code"
 import { twMerge } from "tailwind-merge"
 import { useFormContext } from "react-hook-form"
-import { BillingAddressTranslations } from '../../../types/checkout-translations'
+import { BillingAddressTranslations } from '@/types/checkout-translations'
 import { useTranslations } from 'next-intl'
 
 const isBillingAddressEmpty = (formData: {

@@ -14,7 +14,7 @@ import { z } from "zod"
 import { useCustomer } from "hooks/customer"
 import { useSetShippingAddress } from "hooks/cart"
 import { StoreCart } from "@medusajs/types"
-import { CheckoutDeliveryTranslations } from "../../../types/checkout"
+import { CheckoutDeliveryTranslations } from "@/types/checkout-translations"
 import { useTranslations } from "next-intl"
 
 const addressesFormSchema = z
