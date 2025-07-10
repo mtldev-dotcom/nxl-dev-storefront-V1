@@ -40,14 +40,22 @@ export const getModalClassNames = ({
   )
 }
 
-export const UiModal: React.FC<
-  UiModalOwnProps & ReactAria.ModalOverlayProps
-> = ({ animateFrom = "center", className, ...props }) => (
-  <ReactAria.Modal
-    {...props}
-    className={twMerge(
-      getModalClassNames({ animateFrom }),
-      className as string
-    )}
-  />
-)
+// For accessibility: If a Dialog does not contain a <Heading slot="title">, it must have an aria-label or aria-labelledby attribute.
+// This ensures screen readers can announce the dialog's purpose. We provide a default aria-label if none is given.
+// We use 'any' for props here to allow spreading aria-label and other a11y props.
+export const UiModal: React.FC<any> = ({ animateFrom = "center", className, ...props }) => {
+  // If aria-label is not provided, set a default for accessibility
+  const modalProps = {
+    ...props,
+    ...(props["aria-label"] ? {} : { "aria-label": "Dialog" })
+  }
+  return (
+    <ReactAria.Modal
+      {...modalProps}
+      className={twMerge(
+        getModalClassNames({ animateFrom }),
+        className as string
+      )}
+    />
+  )
+}
