@@ -23,7 +23,7 @@ import {
   useSetPaymentMethod,
 } from "hooks/cart"
 import { StoreCart, StorePaymentSession } from "@medusajs/types"
-import { PaymentStepTranslations } from '../../../types/checkout-translations'
+import { PaymentStepTranslations } from '@/types/checkout-translations'
 import { useTranslations } from 'next-intl'
 
 const Payment = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: PaymentStepTranslations, locale?: string }) => {
