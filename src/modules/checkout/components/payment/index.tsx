@@ -20,15 +20,13 @@ import { Input } from "@/components/Forms"
 import {
   useCartPaymentMethods,
   useGetPaymentMethod,
-  useSetPaymentMethod,
 } from "hooks/cart"
 import { StoreCart, StorePaymentSession } from "@medusajs/types"
-import { PaymentStepTranslations } from '@/types/checkout-translations'
 import { useTranslations } from 'next-intl'
 
-const Payment = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: PaymentStepTranslations, locale?: string }) => {
+const Payment = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: Record<string, string>, locale?: string }) => {
   // Hybrid translation pattern: use prop, then hook, then fallback
-  let t: (key: keyof PaymentStepTranslations) => string
+  let t: (key: string) => string
   if (propTranslations) {
     t = (key) => propTranslations[key as string] || (key as string)
   } else {
@@ -99,7 +97,8 @@ const Payment = ({ cart, translations: propTranslations, locale }: { cart: Store
     setError(null)
   }, [isOpen])
 
-  const setPaymentMethod = useSetPaymentMethod()
+  // [REMOVED] setPaymentMethod and useSetPaymentMethod logic. Stripe payment method changes are now handled via Stripe.js and Medusa's standard flow.
+  // [REMOVED] handleRemoveCard and all mutation logic for setPaymentMethod.
 
   const activeSession = cart?.payment_collection?.payment_sessions?.find(
     (paymentSession: StorePaymentSession) => paymentSession.status === "pending"
@@ -121,28 +120,7 @@ const Payment = ({ cart, translations: propTranslations, locale }: { cart: Store
     cart?.shipping_methods &&
     cart?.shipping_methods.length !== 0
 
-  const handleRemoveCard = useCallback(() => {
-    if (!activeSession?.id) {
-      return
-    }
-
-    try {
-      setPaymentMethod.mutate(
-        { sessionId: activeSession.id, token: null },
-
-        {
-          onSuccess: () => {
-            setCardBrand(null)
-            setCardComplete(false)
-          },
-          onError: () => setError("Failed to remove card"),
-        }
-      )
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      setError("Failed to remove card")
-    }
-  }, [activeSession?.id, setPaymentMethod])
+  // [REMOVED] handleRemoveCard and all mutation logic for setPaymentMethod.
 
   useEffect(() => {
     if (paymentMethod) {
@@ -257,7 +235,10 @@ const Payment = ({ cart, translations: propTranslations, locale }: { cart: Store
         {paymentMethod && isStripeFunc(selectedPaymentMethod) && (
           <Button
             className="mt-6 mr-6"
-            onPress={handleRemoveCard}
+            onPress={() => {
+              // Stripe payment method changes are now handled via Stripe.js and Medusa's standard flow.
+              // This button is no longer needed for removing the card.
+            }}
             isLoading={isLoading}
             isDisabled={!cardComplete}
             data-testid="submit-payment-button"

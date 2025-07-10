@@ -14,7 +14,6 @@ import { z } from "zod"
 import { useCustomer } from "hooks/customer"
 import { useSetShippingAddress } from "hooks/cart"
 import { StoreCart } from "@medusajs/types"
-import { CheckoutDeliveryTranslations } from "@/types/checkout-translations"
 import { useTranslations } from "next-intl"
 
 const addressesFormSchema = z
@@ -58,11 +57,11 @@ const addressesFormSchema = z
 // Refactored Addresses component to use hybrid translation pattern for i18n
 const Addresses = ({ cart, translations, locale }: {
   cart: StoreCart,
-  translations?: CheckoutDeliveryTranslations,
+  translations?: Record<string, string>,
   locale?: string
 }) => {
   // Translation function: use prop if provided, else hook, else locale fallback
-  let t: (key: keyof CheckoutDeliveryTranslations) => string
+  let t: (key: keyof Record<string, string>) => string
   if (translations) {
     t = (key) => translations[key as string] || (key as string)
   } else {

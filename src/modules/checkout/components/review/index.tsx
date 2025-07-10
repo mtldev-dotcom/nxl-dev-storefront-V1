@@ -6,12 +6,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/Button"
 import PaymentButton from "@modules/checkout/components/payment-button"
 import { StoreCart } from "@medusajs/types"
-import { ReviewStepTranslations } from '../../../types/checkout-translations'
 import { useTranslations } from 'next-intl'
 
-const Review = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: ReviewStepTranslations, locale?: string }) => {
+const Review = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: Record<string, string>, locale?: string }) => {
   // Hybrid translation pattern: use prop, then hook, then fallback
-  let t: (key: keyof ReviewStepTranslations) => string
+  let t: (key: string) => string
   if (propTranslations) {
     t = (key) => propTranslations[key as string] || (key as string)
   } else {

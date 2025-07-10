@@ -9,7 +9,6 @@ import {
   retrieveCart,
   setAddresses,
   setEmail,
-  setPaymentMethod,
   setShippingMethod,
   updateLineItem,
   updateRegion,
@@ -310,33 +309,8 @@ export const useInitiatePaymentSession = (
   })
 }
 
-export const useSetPaymentMethod = (
-  options?: UseMutationOptions<
-    void,
-    Error,
-    { sessionId: string; token: string | null | undefined },
-    unknown
-  >
-) => {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationKey: ["set-payment"],
-    mutationFn: async (payload) => {
-      const response = await setPaymentMethod(payload.sessionId, payload.token)
-
-      return response
-    },
-    onSuccess: async function (...args) {
-      await queryClient.invalidateQueries({
-        exact: false,
-        queryKey: ["cart"],
-      })
-
-      await options?.onSuccess?.(...args)
-    },
-    ...options,
-  })
-}
+// [REMOVED] useSetPaymentMethod hook and all references to setPaymentMethod.
+// This hook is no longer needed because payment method confirmation is now handled via Stripe.js using the client_secret from the payment session.
 
 export const useGetPaymentMethod = (id: string | undefined) => {
   return useQuery({
@@ -354,18 +328,18 @@ export const useGetPaymentMethod = (id: string | undefined) => {
 export const usePlaceOrder = (
   options?: UseMutationOptions<
     | {
-        type: "cart"
-        cart: HttpTypes.StoreCart
-        error: {
-          message: string
-          name: string
-          type: string
-        }
+      type: "cart"
+      cart: HttpTypes.StoreCart
+      error: {
+        message: string
+        name: string
+        type: string
       }
+    }
     | {
-        type: "order"
-        order: HttpTypes.StoreOrder
-      }
+      type: "order"
+      order: HttpTypes.StoreOrder
+    }
     | null,
     Error,
     null,

@@ -13,7 +13,6 @@ import { UpsertAddressForm } from "@modules/account/components/UpsertAddressForm
 import { useCountryCode } from "hooks/country-code"
 import { twMerge } from "tailwind-merge"
 import { useFormContext } from "react-hook-form"
-import { BillingAddressTranslations } from '@/types/checkout-translations'
 import { useTranslations } from 'next-intl'
 
 const isBillingAddressEmpty = (formData: {
@@ -53,17 +52,17 @@ const BillingAddress = ({
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
-  translations?: BillingAddressTranslations
+  translations?: Record<string, string>
   locale?: string
 }) => {
   // Hybrid translation pattern: use prop, then hook, then fallback
-  let t: (key: keyof BillingAddressTranslations) => string
+  let t: (key: string) => string
   if (propTranslations) {
-    t = (key) => propTranslations[key as string] || (key as string)
+    t = (key) => propTranslations[key] || key
   } else {
     try {
       const hookT = useTranslations('BillingAddress')
-      t = (key) => hookT(key as string)
+      t = (key) => hookT(key)
     } catch {
       t = (key) => {
         const fallbacks: Record<string, string> = {
@@ -82,7 +81,7 @@ const BillingAddress = ({
           back: locale === 'fr' ? 'Retour' : 'Back',
           billingSameAsShipping: locale === 'fr' ? "L'adresse de facturation est la même que l'adresse de livraison" : 'Billing address same as shipping address',
         }
-        return fallbacks[key as string] || (key as string)
+        return fallbacks[key] || key
       }
     }
   }

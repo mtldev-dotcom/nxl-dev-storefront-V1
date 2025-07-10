@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/Radio"
 import { useCartShippingMethods, useSetShippingMethod } from "hooks/cart"
 import { StoreCart } from "@medusajs/types"
-import { ShippingStepTranslations } from '../../../types/checkout-translations'
 import { useTranslations } from 'next-intl'
 
-const Shipping = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: ShippingStepTranslations, locale?: string }) => {
+const Shipping = ({ cart, translations: propTranslations, locale }: { cart: StoreCart, translations?: Record<string, string>, locale?: string }) => {
   // Hybrid translation pattern: use prop, then hook, then fallback
-  let t: (key: keyof ShippingStepTranslations) => string
+  let t: (key: string) => string
   if (propTranslations) {
     t = (key) => propTranslations[key as string] || (key as string)
   } else {

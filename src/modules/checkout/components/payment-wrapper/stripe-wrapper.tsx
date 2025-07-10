@@ -43,6 +43,7 @@ const StripeWrapper: React.FC<StripeWrapperProps> = ({
   }
 
   return (
+    console.log("StripeWrapper🚀🚀🚀🚀🚀"),
     <Elements options={options} stripe={stripePromise}>
       {children}
     </Elements>

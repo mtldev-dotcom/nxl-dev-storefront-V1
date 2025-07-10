@@ -1,13 +1,13 @@
 "use client"
 
-import { useElements, useStripe } from "@stripe/react-stripe-js"
+import { useElements, useStripe, CardElement } from "@stripe/react-stripe-js"
 import * as React from "react"
 import { HttpTypes } from "@medusajs/types"
 
 import { isStripe } from "@lib/constants"
 import { Button } from "@/components/Button"
 import { usePathname, useRouter } from "next/navigation"
-import { useInitiatePaymentSession, useSetPaymentMethod } from "hooks/cart"
+import { useInitiatePaymentSession } from "hooks/cart"
 import { withReactQueryProvider } from "@lib/util/react-query"
 
 type PaymentButtonProps = {
@@ -74,55 +74,73 @@ const StripeCardPaymentButton = ({
 }) => {
   const stripe = useStripe()
   const elements = useElements()
-  const card = elements?.getElement("card")
-
+  const cardElement = elements?.getElement(CardElement)
   const router = useRouter()
-
-  const setPaymentMethod = useSetPaymentMethod()
-
   const session = cart.payment_collection?.payment_sessions?.find(
     (s) => s.status === "pending"
   )
   const pathname = usePathname()
-
   const initiatePaymentSession = useInitiatePaymentSession()
 
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      const shouldInputCard = !session
-
+      // If no Stripe session, initiate it
       if (!isStripe(session?.provider_id)) {
         await initiatePaymentSession.mutateAsync({ providerId: "stripe" })
       }
-      if (!shouldInputCard) {
-        if (card) {
-          const token = await stripe?.createToken(card, {
+      // Find the updated session after initiation
+      const updatedSession = cart.payment_collection?.payment_sessions?.find(
+        (s) => s.provider_id === "stripe"
+      )
+      // Get the client_secret from the payment session
+      const clientSecret = updatedSession?.data?.client_secret
+      // Debug logs for troubleshooting Stripe integration
+      console.log("[Stripe Debug] stripe:", stripe)
+      console.log("[Stripe Debug] elements:", elements)
+      console.log("[Stripe Debug] cardElement:", cardElement)
+      console.log("[Stripe Debug] clientSecret:", clientSecret, typeof clientSecret)
+      if (
+        !stripe ||
+        !elements ||
+        !cardElement ||
+        typeof clientSecret !== "string" ||
+        !clientSecret
+      ) {
+        setError("Stripe is not properly initialized, client_secret, or card element missing.")
+        return
+      }
+      // Confirm the card payment using Stripe.js
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
             name:
               cart.billing_address?.first_name +
               " " +
               cart.billing_address?.last_name,
-            address_line1: cart.billing_address?.address_1 ?? undefined,
-            address_line2: cart.billing_address?.address_2 ?? undefined,
-            address_city: cart.billing_address?.city ?? undefined,
-            address_country: cart.billing_address?.country_code ?? undefined,
-            address_zip: cart.billing_address?.postal_code ?? undefined,
-            address_state: cart.billing_address?.province ?? undefined,
-          })
-          if (token) {
-            await setPaymentMethod.mutateAsync({
-              sessionId: session.id,
-              token: token.token?.id,
-            })
-          }
-        }
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          {
-            scroll: false,
-          }
-        )
+            address: {
+              line1: cart.billing_address?.address_1 ?? undefined,
+              line2: cart.billing_address?.address_2 ?? undefined,
+              city: cart.billing_address?.city ?? undefined,
+              country: cart.billing_address?.country_code ?? undefined,
+              postal_code: cart.billing_address?.postal_code ?? undefined,
+              state: cart.billing_address?.province ?? undefined,
+            },
+          },
+        },
+      })
+      if (result.error) {
+        setError(result.error.message || "Payment failed.")
+        return
       }
+      // On success, move to review step
+      return router.push(
+        pathname + "?" + createQueryString("step", "review"),
+        {
+          scroll: false,
+        }
+      )
     } catch (err) {
       setError(err instanceof Error ? err.message : `${err}`)
     } finally {
@@ -138,7 +156,7 @@ const StripeCardPaymentButton = ({
       isDisabled={!cardComplete}
       data-testid="submit-payment-button"
     >
-      {!session ? "Enter card details" : "Continue to review"}
+      {session ? "Continue to review" : "Enter card details"}
     </Button>
   )
 }

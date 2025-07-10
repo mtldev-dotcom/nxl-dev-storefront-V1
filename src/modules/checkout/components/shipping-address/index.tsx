@@ -18,7 +18,6 @@ import {
   UiCheckboxLabel,
 } from "@/components/ui/Checkbox"
 import { useFormContext, useWatch } from "react-hook-form"
-import { CheckoutDeliveryTranslations } from "../../../types/checkout"
 import { useTranslations } from "next-intl"
 
 const isShippingAddressEmpty = (formData: {
@@ -63,11 +62,11 @@ const ShippingAddress = ({
   cart: HttpTypes.StoreCart | null
   checked: boolean
   onChange: () => void
-  translations?: CheckoutDeliveryTranslations
+  translations?: Record<string, string>
   locale?: string
 }) => {
   // Translation function: use prop if provided, else hook, else locale fallback
-  let t: (key: keyof CheckoutDeliveryTranslations) => string
+  let t: (key: string) => string
   if (translations) {
     t = (key) => translations[key as string] || (key as string)
   } else {

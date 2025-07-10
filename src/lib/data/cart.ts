@@ -231,21 +231,9 @@ export async function setShippingMethod({
     .catch(medusaError)
 }
 
-export async function setPaymentMethod(
-  session_id: string,
-  token: string | null | undefined
-) {
-  await sdk.client
-    .fetch("/store/custom/stripe/set-payment-method", {
-      method: "POST",
-      body: { session_id, token },
-    })
-    .then((resp) => {
-      revalidateTag("cart")
-      return resp
-    })
-    .catch(medusaError)
-}
+// [REMOVED] setPaymentMethod function and related fetch logic for deleted /store/custom/stripe/set-payment-method endpoint.
+// This function is no longer needed because Medusa's Stripe integration now uses the standard payment session flow.
+// All payment method confirmation is handled via Stripe.js on the frontend using the client_secret from the payment session.
 
 export async function getPaymentMethod(id: string) {
   return await sdk.client
