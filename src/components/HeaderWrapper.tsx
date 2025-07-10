@@ -84,6 +84,7 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
   }, [pathName, isPageWithHeroImage, isAlwaysSticky])
 
   // Build className deterministically for SSR/client match using clsx
+  // Removed product page override: now product pages use the same scroll-based transparency and color transition as hero pages for brand consistency.
   const headerClass = clsx(
     "top-0 left-0 w-full transition-colors fixed z-40 group",
     "max-md:bg-grayscale-50",
@@ -94,8 +95,8 @@ export const HeaderWrapper: React.FC<{ children?: React.ReactNode }> = ({
     "data-[sticky=true]:bg-white/95",
     "data-[sticky=true]:backdrop-blur",
     "data-[sticky=true]:transition-all",
-    "data-[sticky=true]:duration-200",
-    isProductPage && "bg-white shadow-md product-header"
+    "data-[sticky=true]:duration-200"
+    // No product page override: product pages now match hero/visual pages
   );
 
   return (

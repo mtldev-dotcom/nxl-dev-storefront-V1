@@ -122,12 +122,14 @@ export default async function ProductPage({ params }: Props) {
   }
 
   return (
-    <ProductTemplate
-      product={pricedProduct}
-      materials={materials}
-      region={region}
-      countryCode={countryCode}
-      locale={locale}
-    />
+    <div className="nxl-gradient-bg">
+      <ProductTemplate
+        product={pricedProduct}
+        materials={materials}
+        region={region}
+        countryCode={countryCode}
+        locale={locale}
+      />
+    </div>
   )
 }

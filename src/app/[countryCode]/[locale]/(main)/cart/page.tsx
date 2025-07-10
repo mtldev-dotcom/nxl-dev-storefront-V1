@@ -5,7 +5,10 @@ export const metadata: Metadata = {
   title: "Cart",
   description: "View your cart",
 }
-export default  function Cart() {
-
-  return <CartTemplate  />
+export default function CartPage(props) {
+  return (
+    <div className="nxl-gradient-bg">
+      <CartTemplate />
+    </div>
+  )
 }
