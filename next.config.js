@@ -40,6 +40,11 @@ const nextConfig = {
         hostname: "bucket-production-364e.up.railway.app", // fixed typo from .ap to .app
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com", // fixed typo from .ap to .app
+        pathname: "/**",
+      },
       // Add more patterns as needed
     ],
   },
