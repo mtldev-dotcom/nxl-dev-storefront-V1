@@ -71,6 +71,8 @@ export default async function Home({
   setRequestLocale(locale)
 
   const region = await getRegion(countryCode)
+  console.log(region)
+  console.log("////////////////////////////////")
   // Pass the locale explicitly to getTranslations
   const t = await getTranslations({ locale, namespace: 'HomePage' })
 
